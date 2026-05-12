@@ -36,6 +36,9 @@ export type Database = {
                     location: string | null
                     availability: string | null
                     open_to_remote: boolean
+                    experience_level: string
+                    goal: string
+                    onboarding_completed: boolean
                     created_at: string
                     updated_at: string
                 }
@@ -57,6 +60,9 @@ export type Database = {
                     location?: string | null
                     availability?: string | null
                     open_to_remote?: boolean
+                    experience_level?: string
+                    goal?: string
+                    onboarding_completed?: boolean
                     created_at?: string
                     updated_at?: string
                 }
@@ -78,6 +84,9 @@ export type Database = {
                     location?: string | null
                     availability?: string | null
                     open_to_remote?: boolean
+                    experience_level?: string
+                    goal?: string
+                    onboarding_completed?: boolean
                     updated_at?: string
                 }
                 Relationships: []

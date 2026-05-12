@@ -104,31 +104,54 @@ export default function DashboardPage() {
                 </p>
             </div>
 
-            {/* Profile completion banner */}
-            {mockUser.profileCompletion < 100 && (
-                <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 mb-6">
-                    <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-start gap-3">
-                            <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0 mt-1.5" />
-                            <div>
-                                <p className="text-sm text-amber-300 font-medium">
-                                    Your profile is <strong>{mockUser.profileCompletion}%</strong>{" "}complete — here&apos;s what&apos;s missing:
-                                </p>
-                                <ul className="mt-1.5 space-y-0.5">
-                                    {["Target salary range", "2+ advanced challenges", "LinkedIn URL added"].map((item) => (
-                                        <li key={item} className="text-xs text-amber-400/70 flex items-center gap-1.5">
-                                            <span className="w-1 h-1 rounded-full bg-amber-400/50" />
-                                            {item}
-                                        </li>
-                                    ))}
-                                </ul>
+            {/* Profile completion banner — shown when onboarding was skipped or incomplete */}
+            {supabaseProfile ? (
+                supabaseProfile.onboarding_completed === false && (
+                    <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 mb-6">
+                        <div className="flex items-start justify-between gap-4">
+                            <div className="flex items-start gap-3">
+                                <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0 mt-1.5" />
+                                <div>
+                                    <p className="text-sm text-amber-300 font-medium">
+                                        Your profile setup is incomplete
+                                    </p>
+                                    <p className="text-xs text-amber-400/70 mt-1">
+                                        Complete your profile to increase visibility with employers — it takes less than 2 minutes.
+                                    </p>
+                                </div>
                             </div>
+                            <Link href="/onboarding" className="text-xs text-amber-400 hover:text-amber-300 font-medium whitespace-nowrap flex items-center gap-1 shrink-0">
+                                Finish setup <ArrowRight className="w-3 h-3" />
+                            </Link>
                         </div>
-                        <Link href="/settings" className="text-xs text-amber-400 hover:text-amber-300 font-medium whitespace-nowrap flex items-center gap-1 shrink-0">
-                            Fix it <ArrowRight className="w-3 h-3" />
-                        </Link>
                     </div>
-                </div>
+                )
+            ) : (
+                mockUser.profileCompletion < 100 && (
+                    <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 mb-6">
+                        <div className="flex items-start justify-between gap-4">
+                            <div className="flex items-start gap-3">
+                                <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0 mt-1.5" />
+                                <div>
+                                    <p className="text-sm text-amber-300 font-medium">
+                                        Your profile is <strong>{mockUser.profileCompletion}%</strong>{" "}complete — here&apos;s what&apos;s missing:
+                                    </p>
+                                    <ul className="mt-1.5 space-y-0.5">
+                                        {["Target salary range", "2+ advanced challenges", "LinkedIn URL added"].map((item) => (
+                                            <li key={item} className="text-xs text-amber-400/70 flex items-center gap-1.5">
+                                                <span className="w-1 h-1 rounded-full bg-amber-400/50" />
+                                                {item}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                            <Link href="/settings" className="text-xs text-amber-400 hover:text-amber-300 font-medium whitespace-nowrap flex items-center gap-1 shrink-0">
+                                Fix it <ArrowRight className="w-3 h-3" />
+                            </Link>
+                        </div>
+                    </div>
+                )
             )}
 
             {/* Stats row */}

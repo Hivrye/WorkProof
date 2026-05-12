@@ -8,12 +8,16 @@ import {
     TrendingUp, ClipboardList, CalendarCheck, Box, ShieldCheck, Layers,
     ArrowRight, ArrowLeft, CheckCircle2, Briefcase, FolderOpen,
     Repeat2, Dumbbell, Eye, EyeOff, Clock, Zap, Shield, Star,
+    User, AtSign, FileText, Loader2, XCircle, X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useOnboarding } from "@/store/onboarding-store";
 import { tracks } from "@/data/tracks";
 import { challenges } from "@/data/challenges";
 import type { ExperienceLevel, OnboardingGoal, OnboardingProfile } from "@/types";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
+import type { User as AuthUser } from "@supabase/supabase-js";
+import type { Enums } from "@/lib/supabase/types";
 
 // ─── Icon map (matches tracks data) ──────────────────────────────────────────
 
@@ -119,7 +123,13 @@ const slide = {
     exit: (dir: number) => ({ opacity: 0, x: dir * -40 }),
 };
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
+
+// Username validation regex — matches the DB constraint
+const USERNAME_REGEX = /^[a-z0-9][a-z0-9-]{1,48}[a-z0-9]$/;
+const BIO_MAX = 500;
+
+type UsernameStatus = "idle" | "checking" | "available" | "taken" | "invalid";
 
 // ─── Page component ────────────────────────────────────────────────────────────
 
@@ -129,22 +139,83 @@ export default function OnboardingPage() {
 
     const [step, setStep] = useState(1);
     const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward
+    const [saving, setSaving] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
 
-    // Step field values
+    // Auth state (loaded on mount)
+    const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+    const [initialUsername, setInitialUsername] = useState("");
+
+    // Step 1 — track
     const [selectedRole, setSelectedRole] = useState<string | null>(null);
+    // Step 2 — experience
     const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel | null>(null);
+    // Step 3 — goal
     const [goal, setGoal] = useState<OnboardingGoal | null>(null);
+    // Step 4 — AI transparency
     const [showAi, setShowAi] = useState<boolean | null>(null);
+    // Step 5 — profile details
+    const [fullName, setFullName] = useState("");
+    const [username, setUsername] = useState("");
+    const [bio, setBio] = useState("");
+    const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
+    // Step 6 — first challenge
     const [firstChallenge, setFirstChallenge] = useState<string | null>(null);
 
-    // If already onboarded, skip straight to dashboard
+    // Load auth user + current profile username on mount
     useEffect(() => {
-        if (completed) router.replace("/dashboard");
-    }, [completed, router]);
+        if (completed) { router.replace("/dashboard"); return; }
+        if (!isSupabaseConfigured()) return;
+        const supabase = createClient();
+        supabase.auth.getUser().then(({ data: { user } }) => {
+            if (!user) { router.replace("/auth/login"); return; }
+            setCurrentUser(user);
+            // Pre-fill name from auth metadata
+            const metaName = user.user_metadata?.name as string | undefined;
+            if (metaName) setFullName(metaName);
+            // Load existing profile for username pre-fill
+            supabase
+                .from("profiles")
+                .select("username, name")
+                .eq("id", user.id)
+                .single()
+                .then(({ data }) => {
+                    if (data?.username) {
+                        setUsername(data.username);
+                        setInitialUsername(data.username);
+                    }
+                    if (data?.name && !metaName) setFullName(data.name);
+                });
+        });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Debounced username uniqueness check
+    useEffect(() => {
+        if (!username) { setUsernameStatus("idle"); return; }
+        if (username === initialUsername) { setUsernameStatus("available"); return; }
+        if (!USERNAME_REGEX.test(username)) { setUsernameStatus("invalid"); return; }
+        setUsernameStatus("checking");
+        const timer = setTimeout(async () => {
+            if (!isSupabaseConfigured() || !currentUser) {
+                setUsernameStatus("available");
+                return;
+            }
+            const supabase = createClient();
+            const { data } = await supabase
+                .from("profiles")
+                .select("id")
+                .eq("username", username)
+                .neq("id", currentUser.id)
+                .maybeSingle();
+            setUsernameStatus(data ? "taken" : "available");
+        }, 400);
+        return () => clearTimeout(timer);
+    }, [username, initialUsername, currentUser]);
 
     const selectedTrack = tracks.find((t) => t.id === selectedRole);
 
-    // Challenges filtered for step 5 — prefer beginner/intermediate from chosen track
+    // Challenges for step 6 — prefer beginner/intermediate from chosen track
     const filteredChallenges = selectedRole
         ? challenges
             .filter((c) => c.trackId === selectedRole && c.status === "not-started")
@@ -156,7 +227,15 @@ export default function OnboardingPage() {
         if (step === 2) return experienceLevel !== null;
         if (step === 3) return goal !== null;
         if (step === 4) return showAi !== null;
-        if (step === 5) return firstChallenge !== null;
+        if (step === 5) {
+            return (
+                fullName.trim().length > 0 &&
+                username.trim().length >= 3 &&
+                (usernameStatus === "available") &&
+                bio.length <= BIO_MAX
+            );
+        }
+        if (step === 6) return firstChallenge !== null;
         return false;
     }
 
@@ -166,7 +245,7 @@ export default function OnboardingPage() {
             setDirection(1);
             setStep((s) => s + 1);
         } else {
-            handleFinish();
+            handleFinish(false);
         }
     }
 
@@ -177,30 +256,112 @@ export default function OnboardingPage() {
         }
     }
 
-    function handleFinish() {
-        if (!selectedRole || !experienceLevel || !goal || showAi === null || !firstChallenge) return;
-        const track = tracks.find((t) => t.id === selectedRole);
-        const profile: OnboardingProfile = {
-            roleId: selectedRole,
-            roleName: track?.name ?? selectedRole,
-            experienceLevel,
-            goal,
-            showAiOnProfile: showAi,
-            firstChallengeId: firstChallenge,
-            completedAt: new Date().toISOString(),
-        };
-        completeOnboarding(profile);
-        router.push("/dashboard");
+    async function handleFinish(skipped: boolean) {
+        setSaving(true);
+        setSaveError(null);
+        try {
+            if (isSupabaseConfigured()) {
+                const supabase = createClient();
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    const aiPref: Enums<"ai_disclosure_level"> = showAi ? "suggestions" : "none";
+                    const trackName = selectedTrack?.name ?? "";
+
+                    const { error: profileError } = await supabase
+                        .from("profiles")
+                        .update({
+                            name: fullName.trim() || user.email?.split("@")[0] || "",
+                            username: username.trim() || initialUsername,
+                            bio: bio.trim() || null,
+                            target_role: trackName,
+                            track_id: selectedRole ?? "frontend",
+                            ai_transparency_preference: aiPref,
+                            experience_level: experienceLevel ?? "no-experience",
+                            goal: goal ?? "get-hired",
+                            onboarding_completed: !skipped,
+                        })
+                        .eq("id", user.id);
+
+                    if (profileError) throw profileError;
+
+                    // Save selected challenge to saved_challenges (non-blocking — may fail if DB challenges not seeded)
+                    if (!skipped && firstChallenge) {
+                        try {
+                            await supabase
+                                .from("saved_challenges")
+                                .upsert({ user_id: user.id, challenge_id: firstChallenge });
+                        } catch { /* Silently ignore if challenge not yet seeded */ }
+                    }
+
+                    // Save recommended beginner challenges from selected track
+                    if (!skipped && selectedRole) {
+                        const recommendedIds = challenges
+                            .filter((c) => c.trackId === selectedRole && c.status === "not-started" && c.id !== firstChallenge)
+                            .slice(0, 3)
+                            .map((c) => ({ user_id: user.id, challenge_id: c.id }));
+                        if (recommendedIds.length > 0) {
+                            try {
+                                await supabase.from("saved_challenges").upsert(recommendedIds);
+                            } catch { /* Silently ignore if challenges not yet seeded */ }
+                        }
+                    }
+
+                    // Log an activity event
+                    try {
+                        await supabase
+                            .from("activity_events")
+                            .insert({
+                                user_id: user.id,
+                                type: "profile",
+                                title: skipped ? "Account created" : "Onboarding complete",
+                                description: skipped
+                                    ? "Setup skipped — complete your profile to improve job visibility."
+                                    : `Ready to prove skills as a ${trackName}.`,
+                            });
+                    } catch { /* Non-critical, continue */ }
+                }
+            }
+
+            // Update local store so the dashboard doesn't redirect back here
+            completeOnboarding({
+                roleId: selectedRole ?? "",
+                roleName: selectedTrack?.name ?? selectedRole ?? "",
+                experienceLevel: experienceLevel ?? "no-experience",
+                goal: goal ?? "get-hired",
+                showAiOnProfile: showAi ?? true,
+                firstChallengeId: firstChallenge ?? "",
+                completedAt: new Date().toISOString(),
+            });
+
+            router.push("/dashboard");
+        } catch {
+            setSaveError("Something went wrong saving your profile. Please try again.");
+            setSaving(false);
+        }
+    }
+
+    function handleSkip() {
+        handleFinish(true);
     }
 
     return (
         <div className="min-h-screen bg-[#0b0f1a] flex flex-col items-center justify-start px-4 py-12">
-            {/* Logo */}
-            <div className="flex items-center gap-2 mb-10">
-                <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
-                    <Shield className="w-4 h-4 text-white" />
+            {/* Logo + skip */}
+            <div className="w-full max-w-2xl flex items-center justify-between mb-10">
+                <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
+                        <Shield className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-white font-bold text-lg tracking-tight">WorkProof</span>
                 </div>
-                <span className="text-white font-bold text-lg tracking-tight">WorkProof</span>
+                <button
+                    onClick={handleSkip}
+                    disabled={saving}
+                    className="text-xs text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-1"
+                >
+                    Skip setup
+                    <ArrowRight className="w-3 h-3" />
+                </button>
             </div>
 
             {/* Progress bar */}
@@ -217,6 +378,17 @@ export default function OnboardingPage() {
                     />
                 </div>
             </div>
+
+            {/* Error banner */}
+            {saveError && (
+                <div className="w-full max-w-2xl mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 flex items-center gap-3">
+                    <XCircle className="w-4 h-4 text-red-400 shrink-0" />
+                    <p className="text-sm text-red-300">{saveError}</p>
+                    <button onClick={() => setSaveError(null)} className="ml-auto text-red-400 hover:text-red-300">
+                        <X className="w-4 h-4" />
+                    </button>
+                </div>
+            )}
 
             {/* Step content */}
             <div className="w-full max-w-2xl overflow-hidden">
@@ -255,7 +427,18 @@ export default function OnboardingPage() {
                             />
                         )}
                         {step === 5 && (
-                            <Step5
+                            <Step5Profile
+                                fullName={fullName}
+                                username={username}
+                                bio={bio}
+                                usernameStatus={usernameStatus}
+                                onNameChange={setFullName}
+                                onUsernameChange={setUsername}
+                                onBioChange={setBio}
+                            />
+                        )}
+                        {step === 6 && (
+                            <Step6Challenges
                                 challenges={filteredChallenges}
                                 selected={firstChallenge}
                                 trackName={selectedTrack?.name}
@@ -281,15 +464,20 @@ export default function OnboardingPage() {
 
                 <button
                     onClick={advance}
-                    disabled={!canAdvance()}
+                    disabled={!canAdvance() || saving}
                     className={cn(
                         "flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all",
-                        canAdvance()
+                        canAdvance() && !saving
                             ? "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/30"
                             : "bg-[#1e2d45] text-slate-500 cursor-not-allowed"
                     )}
                 >
-                    {step === TOTAL_STEPS ? (
+                    {saving ? (
+                        <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Saving…
+                        </>
+                    ) : step === TOTAL_STEPS ? (
                         <>
                             Go to my dashboard
                             <Zap className="w-4 h-4" />
@@ -550,9 +738,126 @@ function Step4({
     );
 }
 
-// ─── Step 5: Pick first challenge ──────────────────────────────────────────────
+// ─── Step 5: Profile details ──────────────────────────────────────────────────
 
-function Step5({
+function Step5Profile({
+    fullName,
+    username,
+    bio,
+    usernameStatus,
+    onNameChange,
+    onUsernameChange,
+    onBioChange,
+}: {
+    fullName: string;
+    username: string;
+    bio: string;
+    usernameStatus: UsernameStatus;
+    onNameChange: (v: string) => void;
+    onUsernameChange: (v: string) => void;
+    onBioChange: (v: string) => void;
+}) {
+    const usernameHint: Record<UsernameStatus, { text: string; color: string } | null> = {
+        idle: null,
+        checking: { text: "Checking availability…", color: "text-slate-400" },
+        available: { text: "Username is available", color: "text-emerald-400" },
+        taken: { text: "That username is already taken", color: "text-red-400" },
+        invalid: {
+            text: "3–50 characters, lowercase letters, numbers, and hyphens only",
+            color: "text-amber-400",
+        },
+    };
+    const hint = usernameHint[usernameStatus];
+
+    return (
+        <div>
+            <StepHeading
+                step={5}
+                title="Build your public profile"
+                sub="This is what employers see when they find your WorkProof profile."
+            />
+
+            <div className="space-y-5">
+                {/* Full name */}
+                <div>
+                    <label className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-2">
+                        <User className="w-3.5 h-3.5" />
+                        Full name <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        value={fullName}
+                        onChange={(e) => onNameChange(e.target.value)}
+                        placeholder="Alex Rivera"
+                        maxLength={80}
+                        className="w-full bg-[#111827] border border-[#1e2d45] rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition-colors"
+                    />
+                </div>
+
+                {/* Username */}
+                <div>
+                    <label className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-2">
+                        <AtSign className="w-3.5 h-3.5" />
+                        Public username <span className="text-red-400">*</span>
+                    </label>
+                    <div className="relative">
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-500 select-none pointer-events-none">
+                            workproof.io/
+                        </div>
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => onUsernameChange(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
+                            placeholder="your-username"
+                            maxLength={50}
+                            className="w-full bg-[#111827] border border-[#1e2d45] rounded-xl pl-[7.5rem] pr-10 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition-colors"
+                        />
+                        {usernameStatus === "checking" && (
+                            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 animate-spin" />
+                        )}
+                        {usernameStatus === "available" && (
+                            <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400" />
+                        )}
+                        {usernameStatus === "taken" && (
+                            <XCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-red-400" />
+                        )}
+                    </div>
+                    {hint && (
+                        <p className={cn("text-xs mt-1.5", hint.color)}>{hint.text}</p>
+                    )}
+                </div>
+
+                {/* Bio */}
+                <div>
+                    <label className="flex items-center justify-between text-xs font-medium text-slate-400 mb-2">
+                        <span className="flex items-center gap-2">
+                            <FileText className="w-3.5 h-3.5" />
+                            Bio <span className="text-slate-600">(optional)</span>
+                        </span>
+                        <span className={cn(bio.length > BIO_MAX ? "text-red-400" : "text-slate-600")}>
+                            {bio.length}/{BIO_MAX}
+                        </span>
+                    </label>
+                    <textarea
+                        value={bio}
+                        onChange={(e) => onBioChange(e.target.value)}
+                        placeholder="A quick sentence or two about what you're building toward. Employers read this."
+                        rows={3}
+                        maxLength={BIO_MAX + 50}
+                        className="w-full bg-[#111827] border border-[#1e2d45] rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition-colors resize-none"
+                    />
+                    {bio.length > BIO_MAX && (
+                        <p className="text-xs text-red-400 mt-1">Bio must be {BIO_MAX} characters or less</p>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ─── Step 6: Pick first challenge ──────────────────────────────────────────────
+
+function Step6Challenges({
     challenges: filteredChallenges,
     selected,
     trackName,
@@ -572,7 +877,7 @@ function Step5({
     return (
         <div>
             <StepHeading
-                step={5}
+                step={6}
                 title="Pick your first challenge"
                 sub={
                     trackName
@@ -642,6 +947,7 @@ function StepHeading({
         "Good — now tell us a bit more.",
         "You're doing great.",
         "One more important question.",
+        "Almost there.",
         "Last step — then you're in.",
     ];
 
