@@ -1,0 +1,240 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Shield, Mail, Lock, User, Briefcase, AlertCircle, CheckCircle2 } from "lucide-react";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
+
+export default function SignupPage() {
+    const [name, setName] = useState("");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [targetRole, setTargetRole] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const [checkEmail, setCheckEmail] = useState(false);
+    const [isPending, startTransition] = useTransition();
+    const router = useRouter();
+
+    function deriveUsername(value: string) {
+        return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    }
+
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        setError(null);
+
+        if (!/^[a-z0-9][a-z0-9-]{1,48}[a-z0-9]$/.test(username)) {
+            setError("Username must be 3–50 characters: lowercase letters, numbers, and hyphens only.");
+            return;
+        }
+
+        if (!isSupabaseConfigured()) {
+            // Dev shortcut: no Supabase, skip to dashboard.
+            router.push("/dashboard");
+            return;
+        }
+
+        startTransition(async () => {
+            const supabase = createClient();
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: { name, username, target_role: targetRole },
+                    emailRedirectTo: `${window.location.origin}/auth/callback`,
+                },
+            });
+
+            if (error) {
+                setError(error.message);
+                return;
+            }
+
+            // If a session came back immediately, email confirmation is disabled.
+            if (data.session) {
+                router.push("/dashboard");
+                router.refresh();
+            } else {
+                // Email confirmation is required — show the "check your email" screen.
+                setCheckEmail(true);
+            }
+        });
+    }
+
+    if (checkEmail) {
+        return (
+            <div className="min-h-screen bg-[#0b0f1a] flex items-center justify-center px-4">
+                <div className="w-full max-w-md text-center">
+                    <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mx-auto mb-6">
+                        <CheckCircle2 className="w-7 h-7 text-emerald-400" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-white mb-3">Check your email</h2>
+                    <p className="text-slate-400 mb-2">
+                        We sent a confirmation link to{" "}
+                        <span className="text-white font-medium">{email}</span>.
+                    </p>
+                    <p className="text-slate-500 text-sm mb-6">
+                        Click the link in the email to activate your WorkProof account and go to your dashboard.
+                    </p>
+                    <Link
+                        href="/auth/login"
+                        className="text-blue-400 hover:text-blue-300 text-sm font-medium"
+                    >
+                        ← Back to sign in
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-[#0b0f1a] flex items-center justify-center px-4 py-12">
+            <div className="w-full max-w-md">
+                {/* Logo */}
+                <div className="flex items-center gap-2 mb-8 justify-center">
+                    <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center">
+                        <Shield className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="font-bold text-white text-xl tracking-tight">WorkProof</span>
+                </div>
+
+                <div className="rounded-2xl border border-[#1a2540] bg-[#0d1424] p-8">
+                    <h1 className="text-2xl font-bold text-white mb-1">Create your account</h1>
+                    <p className="text-slate-400 text-sm mb-8">
+                        Already have an account?{" "}
+                        <Link href="/auth/login" className="text-blue-400 hover:text-blue-300 font-medium">
+                            Sign in
+                        </Link>
+                    </p>
+
+                    {!isSupabaseConfigured() && (
+                        <div className="flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 mb-6">
+                            <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                            <p className="text-sm text-amber-300">
+                                Demo mode — no Supabase configured. Submitting will skip directly to the dashboard.
+                            </p>
+                        </div>
+                    )}
+
+                    {error && (
+                        <div className="flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 mb-6">
+                            <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                            <p className="text-sm text-red-400">{error}</p>
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-slate-300 mb-1.5">
+                                    Full name
+                                </label>
+                                <div className="relative">
+                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                                    <input
+                                        type="text"
+                                        required
+                                        value={name}
+                                        onChange={(e) => {
+                                            setName(e.target.value);
+                                            if (!username) {
+                                                setUsername(deriveUsername(e.target.value));
+                                            }
+                                        }}
+                                        className="w-full bg-[#0b0f1a] border border-[#1e2d45] rounded-lg pl-9 pr-3 py-2.5 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/60 transition-all text-sm"
+                                        placeholder="Alex Carter"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-slate-300 mb-1.5">
+                                    Username
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={username}
+                                    onChange={(e) => setUsername(deriveUsername(e.target.value))}
+                                    className="w-full bg-[#0b0f1a] border border-[#1e2d45] rounded-lg px-4 py-2.5 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/60 transition-all text-sm font-mono"
+                                    placeholder="alex-carter"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-slate-300 mb-1.5">
+                                Target role <span className="text-slate-600 font-normal">(optional)</span>
+                            </label>
+                            <div className="relative">
+                                <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                                <input
+                                    type="text"
+                                    value={targetRole}
+                                    onChange={(e) => setTargetRole(e.target.value)}
+                                    className="w-full bg-[#0b0f1a] border border-[#1e2d45] rounded-lg pl-9 pr-4 py-2.5 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/60 transition-all text-sm"
+                                    placeholder="e.g. Front-End Developer"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-slate-300 mb-1.5">
+                                Email address
+                            </label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                                <input
+                                    type="email"
+                                    required
+                                    autoComplete="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full bg-[#0b0f1a] border border-[#1e2d45] rounded-lg pl-9 pr-4 py-2.5 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/60 transition-all text-sm"
+                                    placeholder="you@example.com"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-slate-300 mb-1.5">
+                                Password
+                            </label>
+                            <div className="relative">
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                                <input
+                                    type="password"
+                                    required
+                                    minLength={8}
+                                    autoComplete="new-password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full bg-[#0b0f1a] border border-[#1e2d45] rounded-lg pl-9 pr-4 py-2.5 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/60 transition-all text-sm"
+                                    placeholder="8+ characters"
+                                />
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={isPending}
+                            className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white font-semibold rounded-lg transition-colors text-sm mt-2"
+                        >
+                            {isPending ? "Creating account…" : "Create account — it's free"}
+                        </button>
+                    </form>
+                </div>
+
+                <p className="text-center text-xs text-slate-600 mt-6">
+                    By signing up you agree to WorkProof&apos;s{" "}
+                    <Link href="/trust" className="text-slate-500 hover:text-slate-400">
+                        Trust & Ethics Policy
+                    </Link>
+                    .
+                </p>
+            </div>
+        </div>
+    );
+}

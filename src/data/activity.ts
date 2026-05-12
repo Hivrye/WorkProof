@@ -1,0 +1,60 @@
+import type { ActivityItem } from "@/types";
+
+export const activityItems: ActivityItem[] = [
+    {
+        id: "act-001",
+        type: "feedback",
+        title: "Employer viewed your profile",
+        description: "A recruiter at Meridian Labs spent 4 min on your proof profile and bookmarked your accessibility submission.",
+        timestamp: "2026-05-10T09:30:00Z",
+        metadata: { company: "Meridian Labs" },
+    },
+    {
+        id: "act-002",
+        type: "challenge",
+        title: "Back on: Build a SaaS Pricing Section",
+        description: "You resumed this challenge after 3 days. You're 45% through — estimated 2h left.",
+        timestamp: "2026-05-09T14:00:00Z",
+        metadata: { progress: 45, challengeId: "fe-001" },
+    },
+    {
+        id: "act-003",
+        type: "profile",
+        title: "Profile views up 40% this week",
+        description: "47 unique employer views this week — your accessibility submission is driving most of the traffic.",
+        timestamp: "2026-05-08T00:00:00Z",
+        metadata: { views: 47 },
+    },
+    {
+        id: "act-004",
+        type: "badge",
+        title: "Badge earned: Accessibility Advocate",
+        description: "Awarded for outstanding performance across two accessibility-focused challenges. Top 8% of front-end candidates.",
+        timestamp: "2026-04-28T14:31:00Z",
+        metadata: { badge: "Accessibility Advocate" },
+    },
+    {
+        id: "act-005",
+        type: "submission",
+        title: "Submitted: Fix Accessibility Issues in a Landing Page",
+        description: "Scored 92/100 — strong issue coverage and clear written explanation of every fix.",
+        timestamp: "2026-04-28T14:30:00Z",
+        metadata: { score: 92, challengeId: "fe-003" },
+    },
+    {
+        id: "act-006",
+        type: "submission",
+        title: "Submitted: Responsive Dashboard Card System",
+        description: "Scored 88/100 — excellent component architecture and visual polish.",
+        timestamp: "2026-04-15T11:00:00Z",
+        metadata: { score: 88, challengeId: "fe-002" },
+    },
+    {
+        id: "act-007",
+        type: "profile",
+        title: "Profile completion jumped to 68%",
+        description: "Added GitHub, updated your bio, and set your AI transparency preference.",
+        timestamp: "2026-04-10T16:00:00Z",
+        metadata: { completion: 68 },
+    },
+];
