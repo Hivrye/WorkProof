@@ -1,19 +1,19 @@
 /**
- * middleware.ts — WorkProof edge middleware.
+ * proxy.ts — WorkProof edge proxy (Next.js 16+).
  *
  * Runs on every non-static request to:
  *   1. Refresh the Supabase auth session cookie (prevents silent expiry).
  *   2. Protect authenticated-only routes (redirects to /auth/login).
  *   3. Redirect signed-in users away from /auth/* pages.
  *
- * When NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY are not set
- * (mock-data / demo mode), the middleware is a no-op and all routes pass through.
+ * When NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY are
+ * not set (mock-data / demo mode), the proxy is a no-op and all routes pass through.
  */
 
 import { type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware-helper";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     return await updateSession(request);
 }
 
