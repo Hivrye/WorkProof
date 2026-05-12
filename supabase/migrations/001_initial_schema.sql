@@ -17,6 +17,30 @@
 -- keep it explicit for clarity and compatibility.
 create extension if not exists "pgcrypto";
 
+-- ─── Teardown (safe re-run) ───────────────────────────────────────────────────
+-- Drop everything in reverse-dependency order so re-running is safe.
+-- Tables with CASCADE also drop their RLS policies and triggers.
+drop table if exists public.saved_challenges             cascade;
+drop table if exists public.organization_members         cascade;
+drop table if exists public.employer_reviews             cascade;
+drop table if exists public.activity_events              cascade;
+drop table if exists public.proof_scores                 cascade;
+drop table if exists public.submission_process_steps     cascade;
+drop table if exists public.submissions                  cascade;
+drop table if exists public.challenges                   cascade;
+drop table if exists public.tracks                       cascade;
+drop table if exists public.organizations                cascade;
+drop table if exists public.profiles                     cascade;
+drop type  if exists public.org_member_role              cascade;
+drop type  if exists public.employer_review_status       cascade;
+drop type  if exists public.activity_event_type          cascade;
+drop type  if exists public.ai_disclosure_level          cascade;
+drop type  if exists public.challenge_status             cascade;
+drop type  if exists public.difficulty                   cascade;
+drop trigger if exists on_auth_user_created              on auth.users;
+drop function if exists public.handle_new_user()         cascade;
+drop function if exists public.set_updated_at()          cascade;
+
 -- ─── Enums ───────────────────────────────────────────────────────────────────
 
 create type public.difficulty as enum (
