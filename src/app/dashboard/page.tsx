@@ -14,6 +14,7 @@ import { challenges } from "@/data/challenges";
 import { activityItems } from "@/data/activity";
 import { useSubmissions } from "@/store/submissions-store";
 import { useOnboarding } from "@/store/onboarding-store";
+import { useAuth, useCurrentProfile } from "@/lib/supabase/hooks";
 import {
     Shield,
     CheckCircle2,
@@ -28,6 +29,8 @@ export default function DashboardPage() {
     const router = useRouter();
     const { submissions: newSubmissions } = useSubmissions();
     const { completed: onboardingDone, profile: onboardingProfile } = useOnboarding();
+    const { user } = useAuth();
+    const { profile: supabaseProfile } = useCurrentProfile();
 
     // Redirect to onboarding on first visit
     useEffect(() => {
@@ -80,12 +83,19 @@ export default function DashboardPage() {
             ]
             : activityItems;
 
+    // Prefer: Supabase profile name → auth email prefix → mock
+    const displayFirstName = (
+        supabaseProfile?.name ||
+        user?.email?.split("@")[0] ||
+        mockUser.name
+    ).split(" ")[0];
+
     return (
         <AppShell title="Dashboard">
             {/* Welcome header */}
             <div className="mb-8">
                 <h2 className="text-2xl font-bold text-white">
-                    {onboardingDone ? `Welcome, ${mockUser.name.split(" ")[0]}` : `Welcome back, ${mockUser.name.split(" ")[0]}`}
+                    Welcome back, {displayFirstName}
                 </h2>
                 <p className="text-slate-400 mt-1">
                     You&apos;re building proof as a{" "}
@@ -102,7 +112,7 @@ export default function DashboardPage() {
                             <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0 mt-1.5" />
                             <div>
                                 <p className="text-sm text-amber-300 font-medium">
-                                    Your profile is <strong>{mockUser.profileCompletion}%</strong> complete — here&apos;s what&apos;s missing:
+                                    Your profile is <strong>{mockUser.profileCompletion}%</strong>{" "}complete — here&apos;s what&apos;s missing:
                                 </p>
                                 <ul className="mt-1.5 space-y-0.5">
                                     {["Target salary range", "2+ advanced challenges", "LinkedIn URL added"].map((item) => (

@@ -32,7 +32,7 @@ function isProtectedPath(pathname: string): boolean {
 
 export async function updateSession(request: NextRequest): Promise<NextResponse> {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+    const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "";
 
     // If Supabase is not configured, skip auth checks entirely.
     if (!url.startsWith("https://") || key.length < 20) {
