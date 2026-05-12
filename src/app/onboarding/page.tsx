@@ -187,7 +187,7 @@ export default function OnboardingPage() {
                     if (data?.name && !metaName) setFullName(data.name);
                 });
         });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Debounced username uniqueness check
@@ -267,33 +267,45 @@ export default function OnboardingPage() {
                     const aiPref: Enums<"ai_disclosure_level"> = showAi ? "suggestions" : "none";
                     const trackName = selectedTrack?.name ?? "";
 
+                    // ── Core profile update (columns from migration 001 — always exist) ──
+                    // Only include username in update if one is available and non-empty
+                    const usernameToSave = username.trim() || initialUsername;
                     const { error: profileError } = await supabase
                         .from("profiles")
                         .update({
                             name: fullName.trim() || user.email?.split("@")[0] || "",
-                            username: username.trim() || initialUsername,
+                            ...(usernameToSave ? { username: usernameToSave } : {}),
                             bio: bio.trim() || null,
                             target_role: trackName,
                             track_id: selectedRole ?? "frontend",
                             ai_transparency_preference: aiPref,
-                            experience_level: experienceLevel ?? "no-experience",
-                            goal: goal ?? "get-hired",
-                            onboarding_completed: !skipped,
                         })
                         .eq("id", user.id);
 
-                    if (profileError) throw profileError;
+                    if (profileError) throw new Error(profileError.message);
 
-                    // Save selected challenge to saved_challenges (non-blocking — may fail if DB challenges not seeded)
+                    // ── Extended fields (migration 002 — swallow gracefully if not yet applied) ──
+                    try {
+                        await supabase
+                            .from("profiles")
+                            .update({
+                                experience_level: experienceLevel ?? "no-experience",
+                                goal: goal ?? "get-hired",
+                                onboarding_completed: !skipped,
+                            })
+                            .eq("id", user.id);
+                    } catch { /* Migration 002 not yet applied — safe to continue */ }
+
+                    // ── Save selected challenge (non-blocking — may fail if DB challenges not seeded) ──
                     if (!skipped && firstChallenge) {
                         try {
                             await supabase
                                 .from("saved_challenges")
                                 .upsert({ user_id: user.id, challenge_id: firstChallenge });
-                        } catch { /* Silently ignore if challenge not yet seeded */ }
+                        } catch { /* Silently ignore */ }
                     }
 
-                    // Save recommended beginner challenges from selected track
+                    // ── Recommend top 3 track challenges ──
                     if (!skipped && selectedRole) {
                         const recommendedIds = challenges
                             .filter((c) => c.trackId === selectedRole && c.status === "not-started" && c.id !== firstChallenge)
@@ -302,11 +314,11 @@ export default function OnboardingPage() {
                         if (recommendedIds.length > 0) {
                             try {
                                 await supabase.from("saved_challenges").upsert(recommendedIds);
-                            } catch { /* Silently ignore if challenges not yet seeded */ }
+                            } catch { /* Silently ignore */ }
                         }
                     }
 
-                    // Log an activity event
+                    // ── Activity event (non-critical) ──
                     try {
                         await supabase
                             .from("activity_events")
@@ -318,7 +330,7 @@ export default function OnboardingPage() {
                                     ? "Setup skipped — complete your profile to improve job visibility."
                                     : `Ready to prove skills as a ${trackName}.`,
                             });
-                    } catch { /* Non-critical, continue */ }
+                    } catch { /* Non-critical */ }
                 }
             }
 
@@ -334,8 +346,9 @@ export default function OnboardingPage() {
             });
 
             router.push("/dashboard");
-        } catch {
-            setSaveError("Something went wrong saving your profile. Please try again.");
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : "Unknown error";
+            setSaveError(`Something went wrong saving your profile: ${msg}`);
             setSaving(false);
         }
     }
