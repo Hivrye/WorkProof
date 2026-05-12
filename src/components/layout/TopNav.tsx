@@ -2,6 +2,7 @@
 
 import { Bell, Search, Menu } from "lucide-react";
 import Link from "next/link";
+import { useAuth, useCurrentProfile } from "@/lib/supabase/hooks";
 import { mockUser } from "@/data/user";
 
 interface TopNavProps {
@@ -10,6 +11,17 @@ interface TopNavProps {
 }
 
 export function TopNav({ title, onMenuOpen }: TopNavProps) {
+    const { user } = useAuth();
+    const { profile } = useCurrentProfile();
+
+    const displayName = profile?.name ?? (user?.user_metadata?.name as string | undefined) ?? mockUser.name;
+    const displayUsername = profile?.username ?? mockUser.username;
+    const initials = displayName
+        .split(" ")
+        .slice(0, 2)
+        .map((w: string) => w[0])
+        .join("")
+        .toUpperCase();
     return (
         <header className="h-16 border-b border-[#1a2540] bg-[#0b0f1a]/80 backdrop-blur-sm flex items-center px-6 gap-4 sticky top-0 z-30">
             <button
@@ -44,9 +56,9 @@ export function TopNav({ title, onMenuOpen }: TopNavProps) {
                 </button>
 
                 {/* Avatar */}
-                <Link href={`/profile/${mockUser.username}`}>
+                <Link href={`/profile/${displayUsername}`}>
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:opacity-90 transition-opacity">
-                        {mockUser.avatarInitials}
+                        {initials}
                     </div>
                 </Link>
             </div>

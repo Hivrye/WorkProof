@@ -136,7 +136,7 @@ export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                         </div>
                         <div className="min-w-0 flex-1">
                             <p className="text-sm font-medium text-white truncate">{displayName}</p>
-                            <p className="text-xs text-slate-500 truncate">Proof Score: {mockUser.proofScore.total}</p>
+                            <p className="text-xs text-slate-500 truncate">{profile?.target_role ?? mockUser.targetRole}</p>
                         </div>
                         <Shield className="w-3.5 h-3.5 text-blue-500/50 shrink-0" />
                     </Link>

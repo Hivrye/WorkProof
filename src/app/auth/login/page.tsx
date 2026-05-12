@@ -95,9 +95,17 @@ function LoginForm() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-300 mb-1.5">
-                                Password
-                            </label>
+                            <div className="flex items-center justify-between mb-1.5">
+                                <label className="text-sm font-medium text-slate-300">
+                                    Password
+                                </label>
+                                <Link
+                                    href="/auth/forgot-password"
+                                    className="text-xs text-slate-500 hover:text-blue-400 transition-colors"
+                                >
+                                    Forgot password?
+                                </Link>
+                            </div>
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                                 <input
@@ -121,21 +129,12 @@ function LoginForm() {
                         </button>
                     </form>
 
-                    <div className="relative my-6">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-[#1e2d45]" />
-                        </div>
-                        <div className="relative flex justify-center">
-                            <span className="bg-[#0d1424] px-3 text-xs text-slate-600">or</span>
-                        </div>
-                    </div>
-
-                    <Link
-                        href="/dashboard"
-                        className="block w-full py-2.5 border border-[#1e2d45] bg-white/5 hover:bg-white/10 text-slate-300 font-medium rounded-lg transition-colors text-sm text-center"
-                    >
-                        Continue with demo account
-                    </Link>
+                    <p className="text-center text-xs text-slate-600 mt-5">
+                        New to WorkProof?{" "}
+                        <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300 font-medium">
+                            Create a free account
+                        </Link>
+                    </p>
                 </div>
 
                 <p className="text-center text-xs text-slate-600 mt-6">

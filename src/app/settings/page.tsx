@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import NextLink from "next/link";
 import { AppShell } from "@/components/layout/AppShell";
 import { mockUser } from "@/data/user";
 import { useUserProfile } from "@/store/user-store";
-import { Save, Globe, EyeOff, Shield, User, Link as LinkIcon, Bell, CheckCircle2 } from "lucide-react";
+import { useAuth, useCurrentProfile } from "@/lib/supabase/hooks";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
+import { Save, Globe, EyeOff, Shield, User, Link as LinkIcon, Bell, CheckCircle2, AlertCircle } from "lucide-react";
 
 type Visibility = "public" | "private";
 type AIPreference = "none" | "brainstorm" | "suggestions" | "heavy" | "explained";
@@ -19,7 +21,11 @@ const aiPreferenceOptions: { value: AIPreference; label: string; description: st
 ];
 
 export default function SettingsPage() {
-    const { profile, saveProfile } = useUserProfile();
+    const { profile: localProfile, saveProfile } = useUserProfile();
+    const { user } = useAuth();
+    const { profile: supabaseProfile, refresh: refreshProfile } = useCurrentProfile();
+    const [isPending, startTransition] = useTransition();
+    const [saveError, setSaveError] = useState<string | null>(null);
 
     const [name, setName] = useState(mockUser.name);
     const [targetRole, setTargetRole] = useState(mockUser.targetRole);
@@ -33,36 +39,66 @@ export default function SettingsPage() {
     const [emailNotifications, setEmailNotifications] = useState(true);
     const [saved, setSaved] = useState(false);
 
-    // Sync form fields once the store has hydrated from localStorage.
+    // Populate from Supabase profile when available, else fall back to local store.
     useEffect(() => {
-        setName(profile.name);
-        setTargetRole(profile.targetRole);
-        setBio(profile.bio);
-        setPortfolioLink(profile.portfolioLink);
-        setGithubLink(profile.githubLink);
-        setLinkedinLink(profile.linkedinLink);
-        setSkills(profile.skills);
-        setVisibility(profile.isPublic ? "public" : "private");
-        setAIPreference((profile.aiTransparencyPreference as AIPreference) ?? "suggestions");
-        setEmailNotifications(profile.emailNotifications);
-    }, [profile]);
+        if (supabaseProfile) {
+            setName(supabaseProfile.name ?? mockUser.name);
+            setTargetRole(supabaseProfile.target_role ?? mockUser.targetRole);
+            setBio(supabaseProfile.bio ?? mockUser.bio);
+            setPortfolioLink(supabaseProfile.portfolio_link ?? "");
+            setGithubLink(supabaseProfile.github_link ?? "");
+            setLinkedinLink(supabaseProfile.linkedin_link ?? "");
+            setSkills((supabaseProfile.skills ?? []).join(", "));
+            setVisibility(supabaseProfile.is_public ? "public" : "private");
+            setAIPreference((supabaseProfile.ai_transparency_preference as AIPreference) ?? "suggestions");
+        }
+    }, [supabaseProfile]);
 
     const handleSave = () => {
-        saveProfile({
-            name,
-            targetRole,
-            bio,
-            skills,
-            portfolioLink,
-            githubLink,
-            linkedinLink,
-            isPublic: visibility === "public",
-            aiTransparencyPreference: aiPreference,
-            emailNotifications,
-            selectedTrackId: profile.selectedTrackId,
+        setSaveError(null);
+        startTransition(async () => {
+            const skillsArray = skills.split(",").map((s) => s.trim()).filter(Boolean);
+
+            // Persist to Supabase if configured and user is authenticated.
+            if (isSupabaseConfigured() && user) {
+                const supabase = createClient();
+                const { error } = await supabase.from("profiles").update({
+                    name,
+                    target_role: targetRole,
+                    bio: bio || null,
+                    skills: skillsArray,
+                    portfolio_link: portfolioLink || null,
+                    github_link: githubLink || null,
+                    linkedin_link: linkedinLink || null,
+                    is_public: visibility === "public",
+                    ai_transparency_preference: aiPreference,
+                    updated_at: new Date().toISOString(),
+                }).eq("id", user.id);
+
+                if (error) {
+                    setSaveError(error.message);
+                    return;
+                }
+                refreshProfile();
+            }
+
+            // Also persist to local store as fallback.
+            saveProfile({
+                name,
+                targetRole,
+                bio,
+                skills: skillsArray.join(", "),
+                portfolioLink,
+                githubLink,
+                linkedinLink,
+                isPublic: visibility === "public",
+                aiTransparencyPreference: aiPreference,
+                emailNotifications,
+                selectedTrackId: localProfile.selectedTrackId,
+            });
+            setSaved(true);
+            setTimeout(() => setSaved(false), 3000);
         });
-        setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
     };
 
     return (
@@ -73,6 +109,13 @@ export default function SettingsPage() {
                     <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 flex items-center gap-3">
                         <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                         <p className="text-sm text-emerald-300">Settings saved successfully.</p>
+                    </div>
+                )}
+
+                {saveError && (
+                    <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 flex items-center gap-3">
+                        <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                        <p className="text-sm text-red-400">{saveError}</p>
                     </div>
                 )}
 
@@ -308,10 +351,11 @@ export default function SettingsPage() {
                 <div className="flex justify-end">
                     <button
                         onClick={handleSave}
-                        className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                        disabled={isPending}
+                        className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-400 disabled:opacity-60 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                     >
                         <Save className="w-4 h-4" />
-                        Save Changes
+                        {isPending ? "Saving…" : "Save Changes"}
                     </button>
                 </div>
             </div>

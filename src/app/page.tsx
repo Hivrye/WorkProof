@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/supabase/hooks";
 import {
   Shield,
   ArrowRight,
@@ -61,6 +62,7 @@ const testimonials = [
 
 export default function LandingPage() {
   const [activeAudience, setActiveAudience] = useState<"seekers" | "bootcamps" | "employers">("seekers");
+  const { user, loading: authLoading } = useAuth();
 
   return (
     <div className="min-h-screen bg-[#0b0f1a] text-white">
@@ -85,12 +87,29 @@ export default function LandingPage() {
           <Link href="/tracks" className="text-sm text-slate-400 hover:text-white transition-colors hidden sm:block">
             Browse Tracks
           </Link>
-          <Link
-            href="/dashboard"
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
-          >
-            Try the Demo
-          </Link>
+          {!authLoading && user ? (
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/auth/login"
+                className="text-sm text-slate-400 hover:text-white transition-colors hidden sm:block"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/auth/signup"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                Get Started
+              </Link>
+            </>
+          )}
         </div>
       </nav>
 

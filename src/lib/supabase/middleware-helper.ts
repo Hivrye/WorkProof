@@ -77,8 +77,9 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
         return NextResponse.redirect(loginUrl);
     }
 
-    // Authenticated → skip auth pages.
-    if (user && pathname.startsWith("/auth/")) {
+    // Authenticated → skip auth UI pages (but allow API routes like /auth/signout and /auth/callback).
+    const authUiPaths = ["/auth/login", "/auth/signup", "/auth/forgot-password", "/auth/reset-password"];
+    if (user && authUiPaths.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 

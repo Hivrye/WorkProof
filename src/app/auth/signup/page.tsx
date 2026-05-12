@@ -31,8 +31,8 @@ export default function SignupPage() {
         }
 
         if (!isSupabaseConfigured()) {
-            // Dev shortcut: no Supabase, skip to dashboard.
-            router.push("/dashboard");
+            // Dev shortcut: no Supabase, skip to onboarding.
+            router.push("/onboarding");
             return;
         }
 
@@ -43,7 +43,7 @@ export default function SignupPage() {
                 password,
                 options: {
                     data: { name, username, target_role: targetRole },
-                    emailRedirectTo: `${window.location.origin}/auth/callback`,
+                    emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
                 },
             });
 
@@ -54,7 +54,7 @@ export default function SignupPage() {
 
             // If a session came back immediately, email confirmation is disabled.
             if (data.session) {
-                router.push("/dashboard");
+                router.push("/onboarding");
                 router.refresh();
             } else {
                 // Email confirmation is required — show the "check your email" screen.
