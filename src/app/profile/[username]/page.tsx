@@ -539,7 +539,7 @@ export default function PublicProfilePage({
     function handleCopy() {
         const url = typeof window !== "undefined"
             ? window.location.href
-            : `https://workproofolio.dev/profile/${username}`;
+            : `https://proofolio.dev/profile/${username}`;
         navigator.clipboard.writeText(url).then(() => {
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
@@ -564,7 +564,7 @@ export default function PublicProfilePage({
                         <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
                             <Shield className="w-3.5 h-3.5 text-white" />
                         </div>
-                        <span className="font-bold text-white text-sm tracking-tight">WorkProofolio</span>
+                        <span className="font-bold text-white text-sm tracking-tight">Proofolio</span>
                         <span className="hidden sm:inline text-xs text-slate-500 ml-1 border-l border-[#1e2d45] pl-3">
                             Candidate Proof Profile
                         </span>
@@ -636,11 +636,11 @@ export default function PublicProfilePage({
                                     </div>
                                 </div>
 
-                                {/* WorkProofolio Evidence Badge */}
+                                {/* Proofolio Evidence Badge */}
                                 <div className="flex flex-col items-end gap-2">
                                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-blue-500/30 bg-blue-500/8 text-xs">
                                         <Shield className="w-3.5 h-3.5 text-blue-400" />
-                                        <span className="text-blue-300 font-medium">Evidence recorded by WorkProofolio</span>
+                                        <span className="text-blue-300 font-medium">Evidence recorded by Proofolio</span>
                                     </div>
                                     <p className="text-[10px] text-slate-600 text-right max-w-48 leading-relaxed">
                                         Submissions verified through structured challenges. Scores reflect task performance.
@@ -708,7 +708,7 @@ export default function PublicProfilePage({
                     </div>
                 </div>
 
-                {/* ── Verified by WorkProofolio ── */}
+                {/* ── Verified by Proofolio ── */}
                 <div className="rounded-2xl border border-blue-500/20 bg-gradient-to-r from-blue-600/8 via-[#0d1424] to-violet-600/8 p-6">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                         <div className="flex items-center gap-3 shrink-0">
@@ -716,15 +716,15 @@ export default function PublicProfilePage({
                                 <Shield className="w-5 h-5 text-blue-400" />
                             </div>
                             <div>
-                                <p className="text-sm font-semibold text-white">Profile Evidence Recorded by WorkProofolio</p>
+                                <p className="text-sm font-semibold text-white">Profile Evidence Recorded by Proofolio</p>
                                 <p className="text-xs text-slate-500">Challenges completed since {formatDate(user.joinedAt)}</p>
                             </div>
                         </div>
                         <div className="flex-1 sm:border-l sm:border-[#1e2d45] sm:pl-6">
                             <p className="text-sm text-slate-400 leading-relaxed">
-                                WorkProofolio records structured, timed challenge submissions and logs the candidate&apos;s reasoning, process steps, and AI usage.
+                                Proofolio records structured, timed challenge submissions and logs the candidate&apos;s reasoning, process steps, and AI usage.
                                 Scores reflect task performance only.{" "}
-                                <span className="text-slate-500">WorkProofolio does not certify employment qualifications and is not a substitute for interviews.</span>
+                                <span className="text-slate-500">Proofolio does not certify employment qualifications and is not a substitute for interviews.</span>
                             </p>
                         </div>
                     </div>
@@ -774,10 +774,10 @@ export default function PublicProfilePage({
                                         <p className="text-sm text-slate-300 leading-relaxed">
                                             Every submission includes an honest disclosure of how AI tools were used.
                                             {firstName} distinguishes clearly between AI-assisted thinking and personally written work.
-                                            {aiTransparencyPct >= 85 && " This score is in the top 12% of WorkProofolio candidates."}
+                                            {aiTransparencyPct >= 85 && " This score is in the top 12% of Proofolio candidates."}
                                         </p>
                                         <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-                                            WorkProofolio does not penalise AI use. It rewards honest disclosure.
+                                            Proofolio does not penalise AI use. It rewards honest disclosure.
                                         </p>
                                     </div>
                                 </div>
@@ -846,7 +846,7 @@ export default function PublicProfilePage({
                             <Info className="w-4 h-4 text-slate-600 shrink-0 mt-0.5" />
                             <p className="text-xs text-slate-500 leading-relaxed">
                                 <span className="text-slate-400 font-medium">For employers: </span>
-                                WorkProofolio is a tool for gathering structured evidence before an interview — not a replacement for one.
+                                Proofolio is a tool for gathering structured evidence before an interview — not a replacement for one.
                                 Scores measure task performance in a controlled environment. A candidate&apos;s collaboration style, potential, and culture fit still require direct conversation.
                             </p>
                         </div>
@@ -914,7 +914,7 @@ export default function PublicProfilePage({
                             </p>
                             <div className="flex items-center gap-2 p-2 rounded-lg bg-[#0d1424] border border-[#1e2d45] mb-3">
                                 <span className="text-xs text-slate-500 truncate flex-1">
-                                    workproofolio.dev/profile/{username}
+                                    proofolio.dev/profile/{username}
                                 </span>
                                 <button
                                     onClick={handleCopy}
@@ -941,7 +941,7 @@ export default function PublicProfilePage({
                     <div className="flex items-center gap-2">
                         <Shield className="w-4 h-4 text-blue-500/60" />
                         <span className="text-xs text-slate-600">
-                            WorkProofolio · Evidence-based hiring profiles
+                            Proofolio · Evidence-based hiring profiles
                         </span>
                     </div>
                     <p className="text-xs text-slate-700 text-center">

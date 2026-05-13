@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * hooks.ts — WorkProofolio Supabase React hooks.
+ * hooks.ts — Proofolio Supabase React hooks.
  *
  * All hooks gracefully fall back to null / empty state when Supabase is not
  * configured, so the app continues to work in mock-data mode.

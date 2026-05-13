@@ -1,5 +1,5 @@
 /**
- * server.ts — WorkProofolio Supabase server-side client.
+ * server.ts — Proofolio Supabase server-side client.
  *
  * Import this in Server Components, Route Handlers, and Server Actions.
  * It reads / writes auth session cookies via next/headers so that SSR

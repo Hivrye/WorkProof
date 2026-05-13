@@ -38,21 +38,21 @@ const staggerContainer = {
 
 const testimonials = [
   {
-    quote: "I had no degree and no big-name employer to point to. WorkProofolio let me show what I could actually do — and I got three interview invites within two weeks of sharing my profile.",
+    quote: "I had no degree and no big-name employer to point to. Proofolio let me show what I could actually do — and I got three interview invites within two weeks of sharing my profile.",
     name: "Priya M.",
     role: "Self-taught developer, landed front-end role at Relay",
     initials: "PM",
     color: "from-blue-500 to-violet-600",
   },
   {
-    quote: "As a bootcamp, we now recommend WorkProofolio to every grad. Employers respond way better to a proof profile than another portfolio site. It shows process, not just output.",
+    quote: "As a bootcamp, we now recommend Proofolio to every grad. Employers respond way better to a proof profile than another portfolio site. It shows process, not just output.",
     name: "Jordan K.",
     role: "Outcomes Director, Launchpad Dev Bootcamp",
     initials: "JK",
     color: "from-emerald-500 to-cyan-600",
   },
   {
-    quote: "I was switching careers from marketing to UX. WorkProofolio gave me a structured way to build credible evidence — and I could be transparent about using AI without it feeling like a liability.",
+    quote: "I was switching careers from marketing to UX. Proofolio gave me a structured way to build credible evidence — and I could be transparent about using AI without it feeling like a liability.",
     name: "Sam T.",
     role: "Career-switcher, now Junior UX Designer at Notion",
     initials: "ST",
@@ -72,7 +72,7 @@ export default function LandingPage() {
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
             <Shield className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-white text-lg tracking-tight">WorkProofolio</span>
+          <span className="font-bold text-white text-lg tracking-tight">Proofolio</span>
         </div>
         <div className="flex items-center gap-3">
           <Link href="#audiences" className="text-sm text-slate-400 hover:text-white transition-colors hidden sm:block">
@@ -126,7 +126,7 @@ export default function LandingPage() {
               <span className="gradient-text">Get the job.</span>
             </h1>
             <p className="text-lg text-slate-400 leading-relaxed mb-8 max-w-xl">
-              WorkProofolio helps job seekers prove their skills through real-world challenges — not
+              Proofolio helps job seekers prove their skills through real-world challenges — not
               credentials. Complete tasks, document your process, and share a verified proof profile
               employers can actually evaluate.
             </p>
@@ -238,7 +238,7 @@ export default function LandingPage() {
           <h2 className="text-3xl font-bold text-white mb-4">Hiring is broken. Proof fixes it.</h2>
           <p className="text-slate-400 text-lg leading-relaxed">
             Resumes, cover letters, and portfolio sites are getting harder to trust. AI can generate
-            polished claims in minutes. WorkProofolio helps candidates show process, output, and skill
+            polished claims in minutes. Proofolio helps candidates show process, output, and skill
             evidence — things that are genuinely hard to fake.
           </p>
         </div>
@@ -246,7 +246,7 @@ export default function LandingPage() {
           {[
             { icon: FileText, title: "Resumes tell stories.", description: "Anyone can claim they increased revenue by 40% or led a team of 12. Without context or evidence, it is just a sentence." },
             { icon: Users, title: "Portfolios show results.", description: "A beautiful design or a polished project can hide whether the candidate actually drove it — or had it handed to them." },
-            { icon: Shield, title: "WorkProofolio shows proof.", description: "Real tasks. Written process notes. AI disclosure. Scored submissions. Employers see how candidates actually think and work." },
+            { icon: Shield, title: "Proofolio shows proof.", description: "Real tasks. Written process notes. AI disclosure. Scored submissions. Employers see how candidates actually think and work." },
           ].map(({ icon: Icon, title, description }) => (
             <div key={title} className="rounded-xl border border-[#1e2d45] bg-[#111827] p-6">
               <div className="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-4">
@@ -263,7 +263,7 @@ export default function LandingPage() {
       <section className="border-y border-[#1a2540] py-20 bg-[#0d1424]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-3">How WorkProofolio works</h2>
+            <h2 className="text-3xl font-bold text-white mb-3">How Proofolio works</h2>
             <p className="text-slate-400">Four steps to a shareable proof profile.</p>
           </div>
           <div className="grid md:grid-cols-4 gap-6">
@@ -299,7 +299,7 @@ export default function LandingPage() {
           {[
             { icon: Zap, title: "Real-world job simulations", desc: "Every challenge is based on actual work scenarios, not academic exercises.", color: "text-blue-400 bg-blue-400/10 border-blue-500/20" },
             { icon: FileText, title: "Process documentation", desc: "Log your thinking step by step. Employers see how you approach problems, not just the final output.", color: "text-violet-400 bg-violet-400/10 border-violet-500/20" },
-            { icon: Shield, title: "AI usage disclosure", desc: "Transparent AI collaboration is a modern workplace skill. WorkProofolio makes disclosing it easy and respected.", color: "text-cyan-400 bg-cyan-400/10 border-cyan-500/20" },
+            { icon: Shield, title: "AI usage disclosure", desc: "Transparent AI collaboration is a modern workplace skill. Proofolio makes disclosing it easy and respected.", color: "text-cyan-400 bg-cyan-400/10 border-cyan-500/20" },
             { icon: Star, title: "Shareable Proof Profile", desc: "Your profile is a living portfolio of completed challenges, scores, and process evidence.", color: "text-emerald-400 bg-emerald-400/10 border-emerald-500/20" },
             { icon: BarChart3, title: "Proof Score", desc: "A composite score based on challenge quality, process clarity, skill breadth, and AI transparency.", color: "text-amber-400 bg-amber-400/10 border-amber-500/20" },
             { icon: Users, title: "Employer-ready evidence", desc: "Employers get a dedicated view with role fit, red flags, green flags, and interview questions.", color: "text-pink-400 bg-pink-400/10 border-pink-500/20" },
@@ -415,7 +415,7 @@ export default function LandingPage() {
             <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-3">Who it&apos;s for</p>
             <h2 className="text-3xl font-bold text-white mb-3">One platform. Three groups it actually serves.</h2>
             <p className="text-slate-400 text-base max-w-xl mx-auto">
-              WorkProofolio was built for specific people with specific problems. Pick yours.
+              Proofolio was built for specific people with specific problems. Pick yours.
             </p>
           </div>
 
@@ -453,7 +453,7 @@ export default function LandingPage() {
                   Build real proof when you don&apos;t have a traditional résumé.
                 </h3>
                 <p className="text-slate-400 mb-6 leading-relaxed">
-                  Employers are drowning in polished résumés that say nothing verifiable. WorkProofolio gives you a structured way to show what you can actually do — through real job simulations, documented process, and honest AI disclosure.
+                  Employers are drowning in polished résumés that say nothing verifiable. Proofolio gives you a structured way to show what you can actually do — through real job simulations, documented process, and honest AI disclosure.
                 </p>
                 <ul className="space-y-3 mb-8">
                   {[
@@ -527,7 +527,7 @@ export default function LandingPage() {
                   Help your graduates prove what they learned — not just that they finished.
                 </h3>
                 <p className="text-slate-400 mb-6 leading-relaxed">
-                  Hiring partners don&apos;t want to read a cohort outcomes PDF. They want to see real work. WorkProofolio gives your students a scored, shareable proof profile that makes your program&apos;s outcomes measurable — and your graduates more hireable.
+                  Hiring partners don&apos;t want to read a cohort outcomes PDF. They want to see real work. Proofolio gives your students a scored, shareable proof profile that makes your program&apos;s outcomes measurable — and your graduates more hireable.
                 </p>
                 <ul className="space-y-3 mb-8">
                   {[
@@ -543,7 +543,7 @@ export default function LandingPage() {
                   ))}
                 </ul>
                 <a
-                  href="mailto:hello@workproofolio.io"
+                  href="mailto:hello@proofolio.io"
                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-sm transition-colors"
                 >
                   Talk to us about a partnership
@@ -612,7 +612,7 @@ export default function LandingPage() {
                   Stop guessing from résumés. Evaluate candidates on real work.
                 </h3>
                 <p className="text-slate-400 mb-6 leading-relaxed">
-                  Résumés tell stories. Portfolios show results. WorkProofolio shows how candidates actually think — how they approach ambiguous problems, use AI, explain their decisions, and handle constraints under realistic pressure.
+                  Résumés tell stories. Portfolios show results. Proofolio shows how candidates actually think — how they approach ambiguous problems, use AI, explain their decisions, and handle constraints under realistic pressure.
                 </p>
                 <ul className="space-y-3 mb-8">
                   {[
@@ -701,7 +701,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between text-sm text-slate-600 flex-wrap gap-4">
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4 text-blue-500/60" />
-            <span className="font-medium text-slate-500">WorkProofolio</span>
+            <span className="font-medium text-slate-500">Proofolio</span>
           </div>
           <div className="flex items-center gap-6">
             <Link href="/tracks" className="hover:text-slate-400 transition-colors">Tracks</Link>

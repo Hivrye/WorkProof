@@ -210,7 +210,7 @@ export default function ProfilePage() {
                         </p>
                         <div className="flex items-center gap-2 p-2 rounded-lg bg-[#0d1424] border border-[#1e2d45] mb-3">
                             <span className="text-xs text-slate-500 truncate flex-1">
-                                workproofolio.dev/profile/{mockUser.username}
+                                proofolio.dev/profile/{mockUser.username}
                             </span>
                         </div>
                         <button

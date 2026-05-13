@@ -1,5 +1,5 @@
 /**
- * storage.ts — Centralized localStorage utility for WorkProofolio.
+ * storage.ts — Centralized localStorage utility for Proofolio.
  *
  * All storage keys live here so a name-change happens in one place.
  * Every read/write is SSR-safe and silently catches quota/parse errors.
@@ -79,7 +79,7 @@ export const storage = {
     },
 
     /**
-     * Wipe every WorkProofolio key.
+     * Wipe every Proofolio key.
      * Call this on sign-out or explicit "reset account" actions.
      *
      * SUPABASE MIGRATION: sign out via `supabase.auth.signOut()` instead;

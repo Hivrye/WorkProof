@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "WorkProofolio — Real work beats resumes",
+  title: "Proofolio — Real work beats resumes",
   description:
     "Build a proof-of-work profile by completing real-world challenges employers can actually evaluate. Show skills, not just credentials.",
 };

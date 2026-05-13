@@ -1,5 +1,5 @@
 /**
- * database.ts — TypeScript interfaces for every WorkProofolio Supabase table.
+ * database.ts — TypeScript interfaces for every Proofolio Supabase table.
  *
  * These types mirror the schema described in SUPABASE_SCHEMA.md.
  * When @supabase/supabase-js is installed, pass `Database` as the generic to
@@ -120,7 +120,7 @@ export interface OrganizationsRow {
     website: string | null;
     logo_url: string | null;
     description: string | null;
-    verified: boolean;           // manually verified by WorkProofolio team
+    verified: boolean;           // manually verified by Proofolio team
     created_at: ISOTimestamp;
     updated_at: ISOTimestamp;
 }
@@ -167,7 +167,7 @@ export interface TracksInsert {
 export type TracksUpdate = Partial<Omit<TracksInsert, "id">>;
 
 // ─── challenges ───────────────────────────────────────────────────────────────
-//  Individual challenge definitions. Managed by WorkProofolio as content.
+//  Individual challenge definitions. Managed by Proofolio as content.
 //  RLS: Anyone can read active challenges. Only service role can insert/update.
 
 export interface ChallengesRow {

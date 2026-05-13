@@ -296,7 +296,7 @@ export default function BootcampDashboardPage() {
                             <h2 className="text-sm font-semibold text-white">Partner Employers</h2>
                         </div>
                         <p className="text-xs text-slate-400 mb-4 leading-relaxed">
-                            These companies receive WorkProofolio cohort briefs for this program. Employer-ready candidates are surfaced automatically when their Proof Score exceeds 700 and 6+ challenges are completed.
+                            These companies receive Proofolio cohort briefs for this program. Employer-ready candidates are surfaced automatically when their Proof Score exceeds 700 and 6+ challenges are completed.
                         </p>
                         <div className="flex flex-wrap gap-2">
                             {cohortMeta.partnerEmployers.map((emp) => (
@@ -613,14 +613,14 @@ export default function BootcampDashboardPage() {
                         <div className="flex items-start gap-3">
                             <Shield className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
                             <div>
-                                <h3 className="text-sm font-semibold text-white mb-1">How WorkProofolio surfaces candidates ethically</h3>
+                                <h3 className="text-sm font-semibold text-white mb-1">How Proofolio surfaces candidates ethically</h3>
                                 <ul className="space-y-1.5 mt-2">
                                     {[
                                         "Students opt in to employer visibility — profiles are private by default",
                                         "Employers see evidence from real work, not AI-generated resumes",
                                         "AI usage is disclosed per submission — employers know exactly how work was done",
                                         "No demographic, age, location, or photo data is shared with employers without consent",
-                                        "WorkProofolio does not rank candidates against each other — evidence is presented, not stacked",
+                                        "Proofolio does not rank candidates against each other — evidence is presented, not stacked",
                                     ].map((point, i) => (
                                         <li key={i} className="flex items-start gap-2 text-xs text-slate-400">
                                             <CheckCircle2 className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
@@ -641,9 +641,9 @@ export default function BootcampDashboardPage() {
                         <GraduationCap className="w-5 h-5 text-violet-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <h2 className="text-base font-semibold text-white mb-1">WorkProofolio for Bootcamps & Workforce Programs</h2>
+                        <h2 className="text-base font-semibold text-white mb-1">Proofolio for Bootcamps & Workforce Programs</h2>
                         <p className="text-sm text-slate-300 leading-relaxed mb-4">
-                            WorkProofolio replaces generic graduation certificates with verified, employer-readable evidence. Students build a proof portfolio over the course of your program. Instructors get real-time signal on who&apos;s progressing, who needs support, and who is genuinely ready to hire. Employers trust the output because the work is real.
+                            Proofolio replaces generic graduation certificates with verified, employer-readable evidence. Students build a proof portfolio over the course of your program. Instructors get real-time signal on who&apos;s progressing, who needs support, and who is genuinely ready to hire. Employers trust the output because the work is real.
                         </p>
                         <div className="grid sm:grid-cols-3 gap-4">
                             {[

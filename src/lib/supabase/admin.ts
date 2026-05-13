@@ -1,5 +1,5 @@
 /**
- * admin.ts — WorkProofolio Supabase admin (service-role) client.
+ * admin.ts — Proofolio Supabase admin (service-role) client.
  *
  * ⚠ SECURITY: This client bypasses Row Level Security entirely.
  * It MUST only ever be imported in:
@@ -18,7 +18,7 @@ import type { Database } from "./types";
 
 if (typeof window !== "undefined") {
     throw new Error(
-        "[WorkProofolio] createAdminClient() was called in a browser context. " +
+        "[Proofolio] createAdminClient() was called in a browser context. " +
         "This module must only be imported in Route Handlers or Server Actions."
     );
 }

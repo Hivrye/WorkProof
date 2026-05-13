@@ -1,5 +1,5 @@
 /**
- * types.ts — WorkProofolio Supabase Database type map.
+ * types.ts — Proofolio Supabase Database type map.
  *
  * Generated manually to match the schema in supabase/migrations/001_initial_schema.sql.
  * Pass `Database` to createClient<Database>() for full type-safety on all .from() calls.

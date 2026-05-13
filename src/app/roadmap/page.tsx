@@ -187,7 +187,7 @@ const phases: {
                     icon: Link2,
                     title: "LinkedIn integration",
                     description:
-                        "Add a verified WorkProofolio badge and summary to your LinkedIn profile, letting employers find proof evidence without leaving a platform they already use.",
+                        "Add a verified Proofolio badge and summary to your LinkedIn profile, letting employers find proof evidence without leaving a platform they already use.",
                     tag: "Integrations",
                 },
             ],
@@ -205,7 +205,7 @@ export default function RoadmapPage() {
                     <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
                         <Shield className="w-4 h-4 text-white" />
                     </div>
-                    <span className="font-bold text-white text-lg tracking-tight">WorkProofolio</span>
+                    <span className="font-bold text-white text-lg tracking-tight">Proofolio</span>
                 </div>
                 <Link
                     href="/"
@@ -226,7 +226,7 @@ export default function RoadmapPage() {
                     Product Roadmap
                 </h1>
                 <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto">
-                    WorkProofolio is early. This roadmap is a transparent look at where we are, what&apos;s
+                    Proofolio is early. This roadmap is a transparent look at where we are, what&apos;s
                     actively being built, and where we intend to go. We publish it because we think
                     candidates and employers deserve to know what they&apos;re betting on.
                 </p>
@@ -362,7 +362,7 @@ export default function RoadmapPage() {
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between text-sm text-slate-600 flex-wrap gap-4">
                     <div className="flex items-center gap-2">
                         <Shield className="w-4 h-4 text-blue-500/60" />
-                        <span className="font-medium text-slate-500">WorkProofolio</span>
+                        <span className="font-medium text-slate-500">Proofolio</span>
                     </div>
                     <div className="flex items-center gap-6">
                         <Link href="/" className="hover:text-slate-400 transition-colors">Home</Link>
