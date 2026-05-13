@@ -336,7 +336,7 @@ export default function SettingsPage() {
                         <Shield className="w-4 h-4 text-blue-400 shrink-0" />
                         <div>
                             <p className="text-sm font-medium text-white">Trust &amp; Ethics</p>
-                            <p className="text-xs text-slate-500 mt-0.5">How WorkProof handles AI disclosure, data ownership, and verification fairness.</p>
+                            <p className="text-xs text-slate-500 mt-0.5">How WorkProofolio handles AI disclosure, data ownership, and verification fairness.</p>
                         </div>
                     </div>
                     <NextLink

@@ -1,4 +1,4 @@
-// Core domain types for WorkProof
+// Core domain types for WorkProofolio
 
 export type Difficulty = "Beginner" | "Intermediate" | "Advanced";
 export type ChallengeStatus = "not-started" | "in-progress" | "completed";

@@ -72,7 +72,7 @@ export default function ForgotPasswordPage() {
                     <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center">
                         <Shield className="w-5 h-5 text-white" />
                     </div>
-                    <span className="font-bold text-white text-xl tracking-tight">WorkProof</span>
+                    <span className="font-bold text-white text-xl tracking-tight">WorkProofolio</span>
                 </div>
 
                 <div className="rounded-2xl border border-[#1a2540] bg-[#0d1424] p-8">

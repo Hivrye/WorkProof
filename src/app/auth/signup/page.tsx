@@ -76,7 +76,7 @@ export default function SignupPage() {
                         <span className="text-white font-medium">{email}</span>.
                     </p>
                     <p className="text-slate-500 text-sm mb-6">
-                        Click the link in the email to activate your WorkProof account and go to your dashboard.
+                        Click the link in the email to activate your WorkProofolio account and go to your dashboard.
                     </p>
                     <Link
                         href="/auth/login"
@@ -97,7 +97,7 @@ export default function SignupPage() {
                     <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center">
                         <Shield className="w-5 h-5 text-white" />
                     </div>
-                    <span className="font-bold text-white text-xl tracking-tight">WorkProof</span>
+                    <span className="font-bold text-white text-xl tracking-tight">WorkProofolio</span>
                 </div>
 
                 <div className="rounded-2xl border border-[#1a2540] bg-[#0d1424] p-8">
@@ -228,7 +228,7 @@ export default function SignupPage() {
                 </div>
 
                 <p className="text-center text-xs text-slate-600 mt-6">
-                    By signing up you agree to WorkProof&apos;s{" "}
+                    By signing up you agree to WorkProofolio&apos;s{" "}
                     <Link href="/trust" className="text-slate-500 hover:text-slate-400">
                         Trust & Ethics Policy
                     </Link>

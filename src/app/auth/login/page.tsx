@@ -47,11 +47,11 @@ function LoginForm() {
                     <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center">
                         <Shield className="w-5 h-5 text-white" />
                     </div>
-                    <span className="font-bold text-white text-xl tracking-tight">WorkProof</span>
+                    <span className="font-bold text-white text-xl tracking-tight">WorkProofolio</span>
                 </div>
 
                 <div className="rounded-2xl border border-[#1a2540] bg-[#0d1424] p-8">
-                    <h1 className="text-2xl font-bold text-white mb-1">Sign in to WorkProof</h1>
+                    <h1 className="text-2xl font-bold text-white mb-1">Sign in to WorkProofolio</h1>
                     <p className="text-slate-400 text-sm mb-8">
                         Don&apos;t have an account?{" "}
                         <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300 font-medium">
@@ -130,7 +130,7 @@ function LoginForm() {
                     </form>
 
                     <p className="text-center text-xs text-slate-600 mt-5">
-                        New to WorkProof?{" "}
+                        New to WorkProofolio?{" "}
                         <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300 font-medium">
                             Create a free account
                         </Link>
@@ -138,7 +138,7 @@ function LoginForm() {
                 </div>
 
                 <p className="text-center text-xs text-slate-600 mt-6">
-                    By signing in you agree to WorkProof&apos;s{" "}
+                    By signing in you agree to WorkProofolio&apos;s{" "}
                     <Link href="/trust" className="text-slate-500 hover:text-slate-400">
                         Trust & Ethics Policy
                     </Link>

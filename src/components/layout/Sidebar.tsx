@@ -70,7 +70,7 @@ export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                         <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-600">
                             <Shield className="w-4 h-4 text-white" />
                         </div>
-                        <span className="font-bold text-white text-lg tracking-tight">WorkProof</span>
+                        <span className="font-bold text-white text-lg tracking-tight">WorkProofolio</span>
                     </div>
                     <button
                         onClick={onClose}

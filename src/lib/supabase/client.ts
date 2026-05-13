@@ -1,5 +1,5 @@
 /**
- * client.ts — WorkProof Supabase browser client.
+ * client.ts — WorkProofolio Supabase browser client.
  *
  * Uses @supabase/ssr's createBrowserClient which stores the session in cookies
  * (not localStorage), enabling the server to read the auth state via SSR.

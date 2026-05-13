@@ -365,7 +365,7 @@ export default function OnboardingPage() {
                     <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
                         <Shield className="w-4 h-4 text-white" />
                     </div>
-                    <span className="text-white font-bold text-lg tracking-tight">WorkProof</span>
+                    <span className="text-white font-bold text-lg tracking-tight">WorkProofolio</span>
                 </div>
                 <button
                     onClick={handleSkip}
@@ -575,7 +575,7 @@ function Step2({
             <StepHeading
                 step={2}
                 title="What's your current experience level?"
-                sub="Be honest — WorkProof is designed to work at every stage."
+                sub="Be honest — WorkProofolio is designed to work at every stage."
             />
             <div className="space-y-3">
                 {experienceOptions.map((opt) => (
@@ -674,7 +674,7 @@ function Step4({
             <StepHeading
                 step={4}
                 title="Do you want AI usage shown on your profile?"
-                sub="WorkProof tracks AI usage on every challenge. You decide what employers see."
+                sub="WorkProofolio tracks AI usage on every challenge. You decide what employers see."
             />
 
             <div className="rounded-xl border border-[#1e2d45] bg-[#111827] p-4 mb-5 text-sm text-slate-400 leading-relaxed">
@@ -787,7 +787,7 @@ function Step5Profile({
             <StepHeading
                 step={5}
                 title="Build your public profile"
-                sub="This is what employers see when they find your WorkProof profile."
+                sub="This is what employers see when they find your WorkProofolio profile."
             />
 
             <div className="space-y-5">
@@ -815,7 +815,7 @@ function Step5Profile({
                     </label>
                     <div className="relative">
                         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-500 select-none pointer-events-none">
-                            workproof.io/
+                            workproofolio.io/
                         </div>
                         <input
                             type="text"

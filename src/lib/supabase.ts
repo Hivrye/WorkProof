@@ -1,5 +1,5 @@
 /**
- * supabase.ts — WorkProof Supabase client placeholder.
+ * supabase.ts — WorkProofolio Supabase client placeholder.
  *
  * ─── ACTIVATION STEPS ────────────────────────────────────────────────────────
  *  1. Install the client:
@@ -87,7 +87,7 @@ function createStubClient(): SupabaseClient {
     const warn = (method: string) => {
         if (process.env.NODE_ENV !== "production") {
             console.warn(
-                `[WorkProof] supabase.${method}() called but Supabase is not configured.\n` +
+                `[WorkProofolio] supabase.${method}() called but Supabase is not configured.\n` +
                 `Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local.`
             );
         }
@@ -132,7 +132,7 @@ export const supabase: SupabaseClient = keysPresent
     ? (() => {
         // Real client would be created here — keys present but package not yet installed.
         // Once @supabase/supabase-js is installed, replace this branch with createClient().
-        console.warn("[WorkProof] Supabase keys found but @supabase/supabase-js is not installed. Run: npm install @supabase/supabase-js");
+        console.warn("[WorkProofolio] Supabase keys found but @supabase/supabase-js is not installed. Run: npm install @supabase/supabase-js");
         return createStubClient();
     })()
     : createStubClient();

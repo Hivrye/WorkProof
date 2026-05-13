@@ -80,7 +80,7 @@ const plans = [
         billing: "per cohort or seat",
         tagline: "For bootcamps, schools, and hiring teams.",
         cta: "Talk to us",
-        ctaHref: "mailto:hello@workproof.io",
+        ctaHref: "mailto:hello@workproofolio.io",
         ctaStyle: "border border-emerald-500/40 bg-emerald-500/8 hover:bg-emerald-500/12 text-emerald-400",
         highlight: false,
         icon: Building2,
@@ -110,7 +110,7 @@ const faqs = [
     },
     {
         q: "Do you offer discounts for people who are currently unemployed?",
-        a: "Yes — email us at hello@workproof.io. We don't want cost to be the reason someone can't build proof of their skills. We'll work something out.",
+        a: "Yes — email us at hello@workproofolio.io. We don't want cost to be the reason someone can't build proof of their skills. We'll work something out.",
     },
     {
         q: "What does 'employer-ready profile' mean?",
@@ -122,7 +122,7 @@ const faqs = [
     },
     {
         q: "Why is AI disclosure a feature, not a restriction?",
-        a: "Because how you use AI is a real skill. WorkProof doesn't penalize AI use — it requires transparent disclosure. Employers are increasingly interested in candidates who can collaborate with AI effectively and explain what they personally contributed. Honest disclosure is scored positively.",
+        a: "Because how you use AI is a real skill. WorkProofolio doesn't penalize AI use — it requires transparent disclosure. Employers are increasingly interested in candidates who can collaborate with AI effectively and explain what they personally contributed. Honest disclosure is scored positively.",
     },
     {
         q: "Is there a student or bootcamp discount?",
@@ -141,7 +141,7 @@ export default function PricingPage() {
                     <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
                         <Shield className="w-4 h-4 text-white" />
                     </div>
-                    <span className="font-bold text-white text-lg tracking-tight">WorkProof</span>
+                    <span className="font-bold text-white text-lg tracking-tight">WorkProofolio</span>
                 </Link>
                 <div className="flex items-center gap-3">
                     <Link href="/#audiences" className="text-sm text-slate-400 hover:text-white transition-colors hidden sm:block">
@@ -273,7 +273,7 @@ export default function PricingPage() {
                     <div>
                         <p className="text-sm font-semibold text-white mb-1">Our pricing philosophy</p>
                         <p className="text-sm text-slate-400 leading-relaxed">
-                            Job seekers — especially those without degrees or at early career stages — shouldn&apos;t pay to prove their worth. The free plan is permanent, not a trial. Pro is for people who have found WorkProof genuinely useful and want more horsepower. We&apos;ll never put your existing submissions behind a paywall or delete your profile for downgrading.
+                            Job seekers — especially those without degrees or at early career stages — shouldn&apos;t pay to prove their worth. The free plan is permanent, not a trial. Pro is for people who have found WorkProofolio genuinely useful and want more horsepower. We&apos;ll never put your existing submissions behind a paywall or delete your profile for downgrading.
                         </p>
                     </div>
                 </div>
@@ -292,7 +292,7 @@ export default function PricingPage() {
                                 plan: "Free",
                                 planColor: "text-slate-400",
                                 points: [
-                                    "You want to see if WorkProof is worth it",
+                                    "You want to see if WorkProofolio is worth it",
                                     "You're building your first 1–3 proof submissions",
                                     "You want a shareable link with no upfront cost",
                                 ],
@@ -394,7 +394,7 @@ export default function PricingPage() {
                             <ArrowRight className="w-4 h-4" />
                         </Link>
                         <a
-                            href="mailto:hello@workproof.io"
+                            href="mailto:hello@workproofolio.io"
                             className="flex items-center gap-2 px-7 py-3.5 border border-[#1e2d45] bg-white/5 hover:bg-white/8 text-slate-300 font-medium rounded-xl transition-colors text-sm"
                         >
                             <GraduationCap className="w-4 h-4" />
@@ -403,8 +403,8 @@ export default function PricingPage() {
                     </div>
                     <p className="text-xs text-slate-600 mt-5">
                         Questions? Email us at{" "}
-                        <a href="mailto:hello@workproof.io" className="text-slate-500 hover:text-slate-400 underline underline-offset-2">
-                            hello@workproof.io
+                        <a href="mailto:hello@workproofolio.io" className="text-slate-500 hover:text-slate-400 underline underline-offset-2">
+                            hello@workproofolio.io
                         </a>
                     </p>
                 </div>
@@ -415,7 +415,7 @@ export default function PricingPage() {
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between text-sm text-slate-600 flex-wrap gap-4">
                     <div className="flex items-center gap-2">
                         <Shield className="w-4 h-4 text-blue-500/60" />
-                        <span className="font-medium text-slate-500">WorkProof</span>
+                        <span className="font-medium text-slate-500">WorkProofolio</span>
                     </div>
                     <div className="flex items-center gap-6">
                         <Link href="/" className="hover:text-slate-400 transition-colors">Home</Link>

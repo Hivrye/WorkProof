@@ -22,7 +22,7 @@ const sections = [
         iconBg: "bg-violet-500/10 border-violet-500/20",
         title: "AI use is disclosed, not hidden",
         body: [
-            "WorkProof was built in an era when AI tools are a normal part of how people work. We do not pretend otherwise, and we do not expect candidates to pretend otherwise either.",
+            "WorkProofolio was built in an era when AI tools are a normal part of how people work. We do not pretend otherwise, and we do not expect candidates to pretend otherwise either.",
             "When a candidate uses AI — for brainstorming, for reviewing drafts, for understanding a problem — they are encouraged to say so clearly. That disclosure is shown directly on their submission. It is not a mark against them. It is evidence that they can work honestly with modern tools.",
             "The alternative — penalising candidates for AI use while employers' own teams use it freely every day — would be both hypocritical and harmful. We will not build a platform that forces people to lie.",
         ],
@@ -33,11 +33,11 @@ const sections = [
         icon: Scale,
         iconColor: "text-blue-400",
         iconBg: "bg-blue-500/10 border-blue-500/20",
-        title: "WorkProof is evidence, not a verdict",
+        title: "WorkProofolio is evidence, not a verdict",
         body: [
             "A proof profile is one strong signal among many. It shows how someone approached a real problem, documented their thinking, and disclosed their tools. That is genuinely useful information — far more useful than a list of keywords on a résumé.",
             "But no single platform score should be the only reason a person is hired or rejected. Candidates are whole people. Their proof submissions are snapshots, not a complete picture of what they can do on your team.",
-            "We ask employers to use WorkProof as structured evidence that improves hiring conversations, not as a filter that removes humans from the process.",
+            "We ask employers to use WorkProofolio as structured evidence that improves hiring conversations, not as a filter that removes humans from the process.",
         ],
         commitment: "Employers should use profiles to inform decisions, not to replace human judgment.",
     },
@@ -48,9 +48,9 @@ const sections = [
         iconBg: "bg-emerald-500/10 border-emerald-500/20",
         title: "Candidates own their work",
         body: [
-            "Everything a candidate submits on WorkProof — their challenge responses, process documentation, written explanations, skill evidence — belongs to them. We store it, but we do not own it.",
+            "Everything a candidate submits on WorkProofolio — their challenge responses, process documentation, written explanations, skill evidence — belongs to them. We store it, but we do not own it.",
             "Candidates can make their profile private at any time. They can delete their submissions. They can choose exactly what is visible and to whom. These controls are not buried in settings; they are a first-class part of the product.",
-            "If a candidate leaves WorkProof, their data should leave with them. Export and deletion tooling is part of our roadmap, not an afterthought.",
+            "If a candidate leaves WorkProofolio, their data should leave with them. Export and deletion tooling is part of our roadmap, not an afterthought.",
         ],
         commitment: "Profile visibility, submission history, and deletion are candidate-controlled.",
     },
@@ -61,7 +61,7 @@ const sections = [
         iconBg: "bg-amber-500/10 border-amber-500/20",
         title: "We do not sell candidate data",
         body: [
-            "WorkProof earns revenue by charging employers and organisations for access to the platform — not by selling candidate information to third parties. That model matters. It means our incentives are aligned with candidates building genuine proof, not with harvesting attention or personal data.",
+            "WorkProofolio earns revenue by charging employers and organisations for access to the platform — not by selling candidate information to third parties. That model matters. It means our incentives are aligned with candidates building genuine proof, not with harvesting attention or personal data.",
             "Candidate profiles are shared with employers only as candidates explicitly intend: through a public profile link they control, or through a verification request they approve. We do not surface candidate data in bulk to recruiters without consent.",
             "Aggregate, anonymised usage data may be used to improve the product. It will never be linked back to individual candidates or sold.",
         ],
@@ -74,7 +74,7 @@ const sections = [
         iconBg: "bg-cyan-500/10 border-cyan-500/20",
         title: "Verification is transparent and fair",
         body: [
-            "A 'Verified by WorkProof' marker means that the submission was completed on our platform, the candidate documented their process, and AI usage was disclosed according to our guidelines. It does not mean WorkProof has validated every technical decision the candidate made, or that the candidate will be a guaranteed hire.",
+            "A 'Verified by WorkProofolio' marker means that the submission was completed on our platform, the candidate documented their process, and AI usage was disclosed according to our guidelines. It does not mean WorkProofolio has validated every technical decision the candidate made, or that the candidate will be a guaranteed hire.",
             "Scoring criteria are published. When we score a submission, candidates can see which dimensions were evaluated and with what weight. There are no hidden penalties. If scoring changes over time, existing submissions are not retroactively re-scored without notice.",
             "We acknowledge that any automated scoring system has limitations. Candidates who feel a score is unfair have a path to flag it. We read those flags.",
         ],
@@ -87,7 +87,7 @@ const sections = [
         iconBg: "bg-rose-500/10 border-rose-500/20",
         title: "We have a responsibility to get this right",
         body: [
-            "WorkProof sits at the intersection of someone's livelihood and an employer's trust. That is not a neutral position. The decisions we make about scoring, disclosure, visibility, and data affect real people's careers.",
+            "WorkProofolio sits at the intersection of someone's livelihood and an employer's trust. That is not a neutral position. The decisions we make about scoring, disclosure, visibility, and data affect real people's careers.",
             "We are a small team, and we will make mistakes. When we do, we will say so clearly rather than issuing vague statements. We will fix the problem, explain what changed, and — where candidates were concretely harmed — do something meaningful about it.",
             "This page is not a legal document. It is a statement of intent. We are committing to it publicly so that you can hold us to it.",
         ],
@@ -104,7 +104,7 @@ export default function TrustPage() {
                     <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
                         <Shield className="w-4 h-4 text-white" />
                     </div>
-                    <span className="font-bold text-white text-lg tracking-tight">WorkProof</span>
+                    <span className="font-bold text-white text-lg tracking-tight">WorkProofolio</span>
                 </div>
                 <Link
                     href="/"
@@ -125,7 +125,7 @@ export default function TrustPage() {
                     Trust & Ethics
                 </h1>
                 <p className="text-lg text-slate-400 leading-relaxed mb-4">
-                    WorkProof exists to make hiring fairer by replacing vague credentials with verifiable work.
+                    WorkProofolio exists to make hiring fairer by replacing vague credentials with verifiable work.
                     Doing that well requires being honest about what we are, what we are not, and what we owe to the people who use this platform.
                 </p>
                 <p className="text-base text-slate-500 leading-relaxed">
@@ -228,7 +228,7 @@ export default function TrustPage() {
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between text-sm text-slate-600 flex-wrap gap-4">
                     <div className="flex items-center gap-2">
                         <Shield className="w-4 h-4 text-blue-500/60" />
-                        <span className="font-medium text-slate-500">WorkProof</span>
+                        <span className="font-medium text-slate-500">WorkProofolio</span>
                     </div>
                     <div className="flex items-center gap-6">
                         <Link href="/" className="hover:text-slate-400 transition-colors">Home</Link>

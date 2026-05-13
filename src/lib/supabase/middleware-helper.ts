@@ -1,5 +1,5 @@
 /**
- * middleware-helper.ts — Session refresh + route protection for WorkProof.
+ * middleware-helper.ts — Session refresh + route protection for WorkProofolio.
  *
  * Called by src/middleware.ts on every non-static request.
  * Responsibilities:

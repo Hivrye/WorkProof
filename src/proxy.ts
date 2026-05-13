@@ -1,5 +1,5 @@
 /**
- * proxy.ts — WorkProof edge proxy (Next.js 16+).
+ * proxy.ts — WorkProofolio edge proxy (Next.js 16+).
  *
  * Runs on every non-static request to:
  *   1. Refresh the Supabase auth session cookie (prevents silent expiry).

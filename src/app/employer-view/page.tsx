@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
@@ -156,7 +156,7 @@ const recommendations: Record<
         bgClass: "bg-emerald-500/10",
         icon: <Zap className="w-4 h-4" />,
         rationale:
-            "Alex demonstrates exceptional work quality, self-awareness, and transparency for their experience level. The accessibility challenge score (92/100) is in the top 15% of WorkProof submissions. Recommend proceeding to a technical interview with high confidence.",
+            "Alex demonstrates exceptional work quality, self-awareness, and transparency for their experience level. The accessibility challenge score (92/100) is in the top 15% of WorkProofolio submissions. Recommend proceeding to a technical interview with high confidence.",
     },
     "yes": {
         label: "Yes",
@@ -599,18 +599,18 @@ export default function EmployerViewPage() {
                             <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
                             <div>
                                 <h3 className="text-sm font-semibold text-white mb-2">
-                                    WorkProof does not replace interviews.
+                                    WorkProofolio does not replace interviews.
                                 </h3>
                                 <p className="text-sm text-slate-300 leading-relaxed">
                                     It gives employers better evidence <em>before</em> the interview. Challenge scores reflect skill demonstration in a structured task — not a complete picture of a person.
-                                    WorkProof is designed to surface relevant signal, not to make the hiring decision for you. Use this profile to ask sharper questions, not to skip the conversation.
+                                    WorkProofolio is designed to surface relevant signal, not to make the hiring decision for you. Use this profile to ask sharper questions, not to skip the conversation.
                                 </p>
                                 <ul className="mt-3 space-y-1.5">
                                     {[
                                         "Evidence is based on structured tasks, not personality assessments",
                                         "Candidates control their own AI disclosure — we don't penalize use, we reward transparency",
                                         "Scores reflect task-specific performance, not general intelligence or potential",
-                                        "WorkProof does not store biometric, demographic, or background data",
+                                        "WorkProofolio does not store biometric, demographic, or background data",
                                     ].map((point, i) => (
                                         <li key={i} className="flex items-start gap-2 text-xs text-slate-400">
                                             <CheckCircle2 className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
@@ -684,7 +684,7 @@ export default function EmployerViewPage() {
                                 <span className="text-white">Open to remote</span>
                             </div>
                             <div className="flex justify-between">
-                                <span className="text-slate-400">On WorkProof since</span>
+                                <span className="text-slate-400">On WorkProofolio since</span>
                                 <span className="text-white">{new Date(mockUser.joinedAt).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
                             </div>
                         </div>
