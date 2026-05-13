@@ -52,11 +52,26 @@ function reducer(state: SubmissionsState, action: Action): SubmissionsState {
 
 // ─── Context ─────────────────────────────────────────────────────────────────
 
+export interface SaveResult {
+    /** The database-assigned UUID for the saved submission (or local ID in fallback mode). */
+    id: string;
+    error: string | null;
+}
+
 interface SubmissionsContextValue {
     /** Submissions added by the user in this session (not the seed data). */
     submissions: Submission[];
-    /** Add a new submission. Future: fires a Supabase insert before dispatching. */
+    /**
+     * Optimistically adds a submission to local state.
+     * For a persistent async save, use saveSubmission() instead.
+     */
     addSubmission: (submission: Submission) => void;
+    /**
+     * Awaitable Supabase save: inserts submission + process steps + activity event,
+     * then upserts proof_scores. Updates local state on success.
+     * Falls back to localStorage-only in unauthenticated / unconfigured mode.
+     */
+    saveSubmission: (submission: Submission) => Promise<SaveResult>;
 }
 
 const SubmissionsContext = createContext<SubmissionsContextValue | null>(null);
@@ -141,67 +156,110 @@ export function SubmissionsProvider({ children }: { children: ReactNode }) {
         // Optimistic local update — UI responds instantly.
         dispatch({ type: "ADD_SUBMISSION", payload: submission });
 
-        // Fire-and-forget Supabase insert.
+        // Fire-and-forget Supabase insert (legacy path — prefer saveSubmission()).
         if (isSupabaseConfigured()) {
-            void (async () => {
-                try {
-                    const supabase = createClient();
-                    const { data: { user } } = await supabase.auth.getUser();
-                    if (!user) return;
+            void saveToSupabase(submission);
+        }
+    }
 
-                    const { data: inserted, error } = await supabase
-                        .from("submissions")
-                        .insert({
-                            user_id: user.id,
-                            challenge_id: submission.challengeId || null,
-                            challenge_title: submission.challengeTitle,
-                            track: submission.track,
-                            project_title: submission.projectTitle,
-                            live_link: submission.liveLink ?? null,
-                            repo_link: submission.repoLink ?? null,
-                            explanation: submission.explanation,
-                            problem_statement: submission.problemStatement,
-                            design_decisions: submission.designDecisions,
-                            improvements: submission.improvements,
-                            ai_disclosure: submission.aiDisclosure,
-                            ai_description: submission.aiDescription ?? null,
-                            score: submission.score,
-                            skills: submission.skills,
-                        })
-                        .select("id")
-                        .single();
+    async function saveSubmission(submission: Submission): Promise<SaveResult> {
+        // Always update local state first.
+        dispatch({ type: "ADD_SUBMISSION", payload: submission });
 
-                    if (error || !inserted) return;
+        if (!isSupabaseConfigured()) {
+            return { id: submission.id, error: null };
+        }
 
-                    // Insert process steps separately (need the parent submission ID).
-                    if (submission.processSteps.length > 0) {
-                        await supabase.from("submission_process_steps").insert(
-                            submission.processSteps.map((step, i) => ({
-                                submission_id: inserted.id,
-                                title: step.title,
-                                description: step.description,
-                                step_order: i,
-                                recorded_at: step.timestamp,
-                            }))
-                        );
-                    }
+        return saveToSupabase(submission);
+    }
 
-                    // Log an activity event for the dashboard feed.
-                    await supabase.from("activity_events").insert({
-                        user_id: user.id,
-                        type: "submission" as const,
-                        title: `Submitted: ${submission.challengeTitle}`,
-                        description: `Scored ${submission.score}/100`,
-                    });
-                } catch {
-                    // Silently ignore — local state is already updated.
-                }
-            })();
+    async function saveToSupabase(submission: Submission): Promise<SaveResult> {
+        try {
+            const supabase = createClient();
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return { id: submission.id, error: "Not authenticated" };
+
+            // 1. Insert main submission row.
+            const { data: inserted, error: insertError } = await supabase
+                .from("submissions")
+                .insert({
+                    user_id: user.id,
+                    challenge_id: submission.challengeId || null,
+                    challenge_title: submission.challengeTitle,
+                    track: submission.track,
+                    project_title: submission.projectTitle,
+                    live_link: submission.liveLink ?? null,
+                    repo_link: submission.repoLink ?? null,
+                    explanation: submission.explanation,
+                    problem_statement: submission.problemStatement,
+                    design_decisions: submission.designDecisions,
+                    improvements: submission.improvements,
+                    ai_disclosure: submission.aiDisclosure,
+                    ai_description: submission.aiDescription ?? null,
+                    score: submission.score,
+                    skills: submission.skills,
+                })
+                .select("id")
+                .single();
+
+            if (insertError || !inserted) {
+                return { id: submission.id, error: insertError?.message ?? "Insert failed" };
+            }
+
+            const dbId = inserted.id;
+
+            // 2. Insert process steps.
+            if (submission.processSteps.length > 0) {
+                await supabase.from("submission_process_steps").insert(
+                    submission.processSteps.map((step, i) => ({
+                        submission_id: dbId,
+                        title: step.title,
+                        description: step.description,
+                        step_order: i,
+                        recorded_at: step.timestamp,
+                    }))
+                );
+            }
+
+            // 3. Upsert proof_scores — increment cumulative total.
+            const contribution = Math.round(submission.score * 0.5);
+            const { data: current } = await supabase
+                .from("proof_scores")
+                .select("total, max_total, work_quality, process_clarity, skill_coverage, ai_transparency, consistency")
+                .eq("user_id", user.id)
+                .single();
+
+            if (current) {
+                const subScores = calculateSubScores(submission);
+                await supabase
+                    .from("proof_scores")
+                    .update({
+                        total: Math.min(current.total + contribution, current.max_total),
+                        work_quality: blendScore(current.work_quality, subScores.work_quality),
+                        process_clarity: blendScore(current.process_clarity, subScores.process_clarity),
+                        skill_coverage: blendScore(current.skill_coverage, subScores.skill_coverage),
+                        ai_transparency: blendScore(current.ai_transparency, subScores.ai_transparency),
+                        consistency: Math.min(current.consistency + 3, 100),
+                    })
+                    .eq("user_id", user.id);
+            }
+
+            // 4. Activity event.
+            await supabase.from("activity_events").insert({
+                user_id: user.id,
+                type: "submission" as const,
+                title: `Submitted: ${submission.challengeTitle}`,
+                description: `Scored ${submission.score}/100 · ${submission.track}`,
+            });
+
+            return { id: dbId, error: null };
+        } catch (err) {
+            return { id: submission.id, error: err instanceof Error ? err.message : "Unknown error" };
         }
     }
 
     return (
-        <SubmissionsContext.Provider value={{ submissions: state.submissions, addSubmission }}>
+        <SubmissionsContext.Provider value={{ submissions: state.submissions, addSubmission, saveSubmission }}>
             {children}
         </SubmissionsContext.Provider>
     );
@@ -238,4 +296,50 @@ export function calculateSubmissionScore(params: {
     if (params.aiDisclosure === "explained") score += 4;
     if (params.aiDisclosure === "none") score += 2; // pure independent work
     return Math.min(Math.round(score), 98);
+}
+
+// ─── Sub-score breakdown (maps to proof_scores columns) ──────────────────────
+
+interface SubScores {
+    work_quality: number;
+    process_clarity: number;
+    skill_coverage: number;
+    ai_transparency: number;
+}
+
+function calculateSubScores(submission: Submission): SubScores {
+    // work_quality: explanation depth + design decisions quality
+    let wq = 60;
+    if (submission.problemStatement.trim().length > 100) wq += 10;
+    if (submission.designDecisions.trim().length > 200) wq += 15;
+    if (submission.improvements.trim().length > 80) wq += 10;
+    if (submission.liveLink) wq += 5;
+    const work_quality = Math.min(wq, 100);
+
+    // process_clarity: number and detail of process steps
+    const stepCount = submission.processSteps.length;
+    let pc = 40 + Math.min(stepCount * 10, 40);
+    const withDesc = submission.processSteps.filter((s) => s.description.trim().length > 20).length;
+    pc += Math.min(withDesc * 5, 20);
+    const process_clarity = Math.min(pc, 100);
+
+    // skill_coverage: based on how many skills the challenge tests
+    const skill_coverage = Math.min(40 + submission.skills.length * 10, 100);
+
+    // ai_transparency: level of AI honesty
+    const aiMap: Record<Submission["aiDisclosure"], number> = {
+        none: 80,         // no AI — clean
+        brainstorm: 90,   // transparent about minimal usage
+        suggestions: 95,  // transparent with details
+        explained: 100,   // highest — can explain everything
+        heavy: 85,        // honest about heavy usage
+    };
+    const ai_transparency = aiMap[submission.aiDisclosure] ?? 80;
+
+    return { work_quality, process_clarity, skill_coverage, ai_transparency };
+}
+
+/** Rolling blend: new score moves the needle 30% toward the latest value. */
+function blendScore(current: number, next: number): number {
+    return Math.round(current * 0.7 + next * 0.3);
 }
